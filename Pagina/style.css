@@ -1,0 +1,298 @@
+/*Fuentes*/
+@font-face {
+    font-family: "Hollen Vintage";
+    src: url("./recursos/fuentes/Holen\ Vintage.otf") format("opentype"); /* Asegúrate de que la ruta sea correcta */
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "apple"; /*nombre que le voy a poner a la fuente para poder llamarla*/
+    src: url("./recursos/fuentes/AppleGaramond-Bold.ttf") format("truetype"),
+        url("./recursos/fuentes/AppleGaramond-BoldItalic.ttf") format("truetype"),
+        url("./recursos/fuentes/AppleGaramond-Italic.ttf") format("truetype"),
+        url("./recursos/fuentes/AppleGaramond-Light.ttf") format("truetype"),
+        url("./recursos/fuentes/AppleGaramond-LightItalic.ttf") format("truetype"),
+        url("./recursos/fuentes/AppleGaramond.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+}
+
+@font-face {
+    font-family: "letters";
+    src: url("./recursos/fuentes/Letters\ for\ Learners.ttf") format("truetype"); /* Asegúrate de que la ruta sea correcta */
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*STILOS GENERALES*/
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-image: url("./recursos/imagenes/background.png");
+}
+
+/*ESTILOS CABECERA*/
+header{
+    display: flex;
+    align-items: center; /* Alinea verticalmente la imagen y el texto */
+    position: relative;
+}
+
+
+header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("./recursos/imagenes/fondoHeader.jpg");
+    background-size: cover; /* Cubre todo el contenedor */
+    background-position: center; /* Centra la imagen */
+    filter: blur(10px); /* Aplica el desenfoque */
+    z-index: 0; /* Envía la imagen al fondo */
+}
+
+header .logo img{
+    margin-right: 10px; /* Espacio entre la imagen y el h1 */
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+}
+
+header>h1{
+    position: relative;
+    z-index: 10;
+    font-family: "letters";
+    font-size: 60px;
+}
+
+header>h2{
+    color: #70b231;
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-shadow: 
+        -1px -1px 0px black,   /* Sombra izquierda superior */
+         1px -1px 0px black,   /* Sombra derecha superior */
+        -1px  1px 0px black,   /* Sombra izquierda inferior */
+         1px  1px 0px black;   /* Sombra derecha inferior */
+}
+
+header p{
+    position: absolute;
+    left: 65px;
+    bottom: 0;
+    font-weight: bold;
+}
+
+header .redes{
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+header .redes img{
+    width: 50px;
+    height: 50px;
+}
+
+/*ESTILO DE LA BARRA DE NAVEGACIÓN*/
+nav{
+    width: 100%;
+    height: 40px;
+    background-color: #333;
+    color: white;
+    position: sticky;
+    top: 10px;
+}
+
+nav ul{
+    list-style: none;
+    margin: 0 auto;
+}
+
+nav ul li{
+    float: left;
+    line-height: 40px;
+    width: 200px;
+    text-align: center;
+    margin: 0 10px;
+    margin-left: 200px;
+}
+
+nav ul li a{
+    display: block;
+    color: white;
+    text-decoration: none;
+}
+
+/*ESTILOS CONTENIDO DEL INDICE*/
+.introduccion{
+    width: 90%;
+    margin: 10px auto;
+    display: flex;     /* Configura el contenedor como un flexbox */
+    align-items: center;    /*Alinear el contenedor verticalmente*/
+}
+
+.introduccion p{
+    width: 50%;
+    margin: 0;
+    padding: 10px;   
+    font-family: "Hollen Vintage";
+    font-size: larger;
+}
+
+.introduccion img{
+    width: 50%;
+    height: auto;
+}
+
+.articulos{
+    width: 90%;
+    margin: 50px auto;
+}
+
+.articulos article{
+    background-color: white;
+    width: 45%;
+    box-shadow: 0 0 2px grey;
+    border-radius: 20px;
+    float: left;
+    margin: 30px;
+    font-family: "apple";
+    font-size: large;
+    padding: 2em;
+}
+
+/*ESTILOS DEL FOOTER*/
+.clear{     /*Div para limpiar los flex */
+    clear: both;
+}
+
+footer{
+    background-color: #333;
+    width: 100%;
+    height: 150px;
+    position: relative;
+    display: flex;
+    justify-content: space-between; /* Espacio entre los elementos dentro del footer */
+    align-items: center;            /* Alinea verticalmente al centro */
+    padding: 0 20px;  
+}
+
+footer p{
+    width: 20%;
+    color: white;
+    font-family: "letters";
+    font-size: 40px;
+}
+
+footer .redes-footer{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+footer .redes-footer img{
+    width: 40px;
+    
+}
+
+footer .ubicacion p{
+    width: 40%;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    position: absolute;
+    left: 460px;
+    top: 10%;
+    display: flex;
+    align-items: center;
+}
+
+/*ESTILOS DE PAGINA DE QUE OFRECEMOS*/
+#mainO {
+    width: 90%; /* Ancho del contenedor principal */
+    margin: 0 auto; /* Centra el main */
+}
+
+#mainO section {
+    overflow: hidden; /* Esto ayuda a manejar los elementos flotantes */
+    margin-top: 20px;
+    margin-bottom: 20px; /* Espacio entre las secciones */
+    height: 400px;
+    box-shadow: 0 0 2px grey;
+    border-radius: 20px;
+}
+
+#mainO section img {
+    float: left; /* Flota la imagen a la izquierda */
+    width: 50%; /* Ancho de las imágenes */
+    height: 400px; /* Altura de las imágenes */
+    object-fit: cover; /* Mantiene la proporción de las imágenes */
+}
+
+#mainO section div {
+    float: left; /* Flota el div a la izquierda también */
+    width: 50%; /* Asegúrate de que el div tenga suficiente espacio */
+    margin-top: 7%;
+    padding-left: 1em;
+}
+
+#mainO h2{
+    font-family: "letters";
+    font-size: 35px;
+}
+
+#mainO p{
+    font-family: "apple";
+}
+
+/*ESTILOS DE CONTACTO*/
+.mainC {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    margin: 30px auto;
+    font-family: "apple";
+}
+
+.formulario{
+    width: 50%;
+    height: 530px;
+    text-align: center;
+}
+
+#mainC .formulario{
+    width: 90%;
+    margin: 10px auto;
+}
+
+fieldset:first-of-type{
+    margin-bottom: 30px;
+}
+
+fieldset{
+    border-radius: 20px;
+}
+
+legend{
+    color: #3e7a05;
+    font-size: larger;
+}
+
+input[type="email"]{
+    box-shadow: 0 0 4px green inset;
+}
+
+input[type="number"]{
+    box-shadow: 0 0 4px green inset;
+}
+
+textarea{
+    box-shadow: 0 0 4px green inset;
+}
