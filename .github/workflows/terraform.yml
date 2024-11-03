@@ -31,7 +31,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.3
         with:
-          terraform_version: 3    #https://spacelift.io/blog/github-actions-terraform    aunque creo la version mas actual es la 1.9.8
+          terraform_version: 1.9.7    #https://spacelift.io/blog/github-actions-terraform    aunque creo la version mas actual es la 1.9.8
 
       - name: Terraform init
         id: init
