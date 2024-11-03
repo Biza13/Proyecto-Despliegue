@@ -35,14 +35,14 @@ jobs:
 
       - name: Terraform init
         id: init
-        run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+        run: terraform -chdir="Archivos tf" init -backend-config="bucket=$BUCKET_TF_STATE"
        
       - name: Plan Terraform
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        run: terraform -chdir="Archivos tf" plan -no-color -input=false
         continue-on-error: true
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        run: terraform -chdir="Archivos tf" apply -auto-approve -input=false
