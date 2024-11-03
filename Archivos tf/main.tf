@@ -13,7 +13,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Crear una VPC
+# Crear una VPC.
 resource "aws_vpc" "Desarrollo-web-VPC" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -21,7 +21,7 @@ resource "aws_vpc" "Desarrollo-web-VPC" {
   }
 } 
 
-#red pública
+#red pública.
 resource "aws_subnet" "subred-publica" {
   vpc_id = aws_vpc.Desarrollo-web-VPC.id
   cidr_block = "10.0.101.0/24"
