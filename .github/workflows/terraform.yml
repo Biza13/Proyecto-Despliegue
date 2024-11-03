@@ -45,4 +45,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+         #definido previamente otro secreto con la clave publica deployer-key.pub
+         TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform -chdir="Archivos tf" apply -auto-approve -input=false
