@@ -1,0 +1,48 @@
+name: Terraform AWS Deployment
+
+#evento para que se deployee cuando se hace el push
+#on:
+  #push:   #evento a hacer en este caso cuando hagamos un push
+    #branches:   #en la rama main
+    #  - main
+
+#Este evento es para que solo se deployee si se lo digo manualmente
+on:
+  workflow_dispatch:
+
+jobs:
+  despliegue:   #nombre del job
+    runs-on: ubuntu-latest   #maquina virtual en la que lo vamos a lanzar
+
+    steps:   #pasos
+          #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
+      - name: Checkout   #nombre del action
+        uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
+      
+      - name: Configurar credenciales aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+          
+          #este paso es para instalar terraform en la maquina virtual
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+          terraform_version: 3    #https://spacelift.io/blog/github-actions-terraform    aunque creo la version mas actual es la 1.9.8
+
+      - name: Terraform init
+        id: init
+        run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+       
+      - name: Plan Terraform
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: terraform plan -no-color -input=false
+        continue-on-error: true
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
