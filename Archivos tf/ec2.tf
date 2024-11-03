@@ -61,12 +61,19 @@ resource "aws_security_group" "security" {
   }
 }
 
+# Definir el par de claves en Terraform
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = file("C:/Users/serra/.ssh/deployer-key.pub")
+}
+
 #crear una instancia
 resource "aws_instance" "instancia" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"    #poner el t2
   subnet_id = aws_subnet.subred-publica.id
   vpc_security_group_ids = [aws_security_group.security.id]
+  key_name      = aws_key_pair.deployer.key_name  # Usar la clave "deployer-key"
 
   tags = {
     Name = "instancia"
@@ -82,4 +89,3 @@ resource "aws_instance" "instancia" {
               echo "<h1>Hola mundo desde $(hostname -f)</h1>" > /var/www/html/index.html
               EOF
 }
-
