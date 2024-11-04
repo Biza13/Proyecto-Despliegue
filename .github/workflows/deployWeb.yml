@@ -1,11 +1,8 @@
 name: SCP Files Deployment
 
 on:
-    workflow_dispatch:
-#    push:   #evento a hacer en este caso cuando hagamos un push
-#      branches:   #en la rama main
-#        - main
-  
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,32 +11,44 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # Cambia esto según tu región
+          aws-region: us-east-1
 
       - name: Get EC2 Instance ID
         id: get_instance_id
-        run: |  # en value va el tag de la instancia
+        run: |
           INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=instancia" --query "Reservations[0].Instances[0].InstanceId" --output text)
-          echo "Instance ID: $INSTANCE_ID"
-          echo "::set-output name=instance_id::$INSTANCE_ID"
+          echo "instance_id=$INSTANCE_ID" >> $GITHUB_ENV
 
       - name: Get EC2 Instance Public IP
         id: get_ip
         run: |
-          IP=$(aws ec2 describe-instances --instance-ids ${{ steps.get_instance_id.outputs.instance_id }} --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
-          echo "Public IP: $IP"
-          echo "::set-output name=public_ip::$IP"
+          IP=$(aws ec2 describe-instances --instance-ids ${{ env.instance_id }} --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+          echo "public_ip=$IP" >> $GITHUB_ENV
 
-      - name: Copy files to EC2
-        uses: ./ # Cambia esto a la acción correspondiente para SCP/SSH
+      - name: Copy index.html to EC2
+        uses: c0c1/scp-action@v1.0
         with:
-          host: ${{ steps.get_ip.outputs.public_ip }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
+          src: "index.html"  # Ruta a la ubicación del archivo que deseas copiar
+          host: ${{ env.public_ip }}
+          remote: "/var/www/html"  # Ruta en la instancia EC2 donde deseas copiar el archivo
           port: 22
-          source: "ruta/a/tus/archivos/web/*"
-          target: "/var/www/html" # Ajusta según la raíz de tu servidor web
+          user: ubuntu  # Usuario para Ubuntu
+          key: ${{ secrets.DEPLOYER_KEY }}  # Clave privada para la conexión SSH
+
+      - name: Copy files from Pagina to EC2
+        uses: c0c1/scp-action@v1.0
+        with:
+          src: "Pagina/*"  # Ruta a la carpeta donde están tus archivos
+          host: ${{ env.public_ip }}
+          remote: "/var/www/html"  # Ruta en la instancia EC2 donde deseas copiar los archivos
+          port: 22
+          user: ubuntu  # Usuario para Ubuntu
+          key: ${{ secrets.DEPLOYER_KEY }}  # Clave privada para la conexión SSH
+
+      - name: Change permissions on the remote directory
+        run: |
+          ssh -i ${{ secrets.DEPLOYER_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ env.public_ip }} "sudo chown -R ubuntu:ubuntu /var/www/html && sudo chmod -R 775 /var/www/html"
