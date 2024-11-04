@@ -1,0 +1,45 @@
+name: SCP Files Deployment
+
+on:
+    workflow_dispatch:
+#    push:   #evento a hacer en este caso cuando hagamos un push
+#      branches:   #en la rama main
+#        - main
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Cambia esto según tu región
+
+      - name: Get EC2 Instance ID
+        id: get_instance_id
+        run: |  # en value va el tag de la instancia
+          INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=instancia" --query "Reservations[0].Instances[0].InstanceId" --output text)
+          echo "Instance ID: $INSTANCE_ID"
+          echo "::set-output name=instance_id::$INSTANCE_ID"
+
+      - name: Get EC2 Instance Public IP
+        id: get_ip
+        run: |
+          IP=$(aws ec2 describe-instances --instance-ids ${{ steps.get_instance_id.outputs.instance_id }} --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+          echo "Public IP: $IP"
+          echo "::set-output name=public_ip::$IP"
+
+      - name: Copy files to EC2
+        uses: ./ # Cambia esto a la acción correspondiente para SCP/SSH
+        with:
+          host: ${{ steps.get_ip.outputs.public_ip }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          source: "ruta/a/tus/archivos/web/*"
+          target: "/var/www/html" # Ajusta según la raíz de tu servidor web
