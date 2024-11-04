@@ -55,3 +55,8 @@ jobs:
       #  with:
       #    name: tfstate
       #    path: "Archivos tf/terraform.tfstate" # Asegúrate de que la ruta sea correcta
+
+      #destruir la infraestructura MANUALMENTE
+      - name: Terraform Destroy
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform -chdir="Archivos tf" destroy -auto-approve
