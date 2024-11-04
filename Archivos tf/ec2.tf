@@ -64,6 +64,7 @@ resource "aws_security_group" "security" {
 # Definir el par de claves en Terraform
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
+  #public_key = file("C:/Users/serra/.ssh/deployer-key.pub")
   #lo hacemos con la variable creada
   public_key = var.deployer_public_key
 }
