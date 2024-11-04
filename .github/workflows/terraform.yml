@@ -35,7 +35,8 @@ jobs:
 
       - name: Terraform init
         id: init
-        run: terraform -chdir="Archivos tf" init -backend-config="bucket=$BUCKET_TF_STATE"
+        #run: terraform -chdir="Archivos tf" init -backend-config="bucket=$BUCKET_TF_STATE"
+        run: terraform -chdir="Archivos tf" init  # Inicializa Terraform sin backend con el tfstate que esta en el repositorio
        
       - name: Plan Terraform
         id: plan
@@ -49,8 +50,8 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform -chdir="Archivos tf" apply -auto-approve -input=false
 
-      - name: Subir tfstate como artefacto
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfstate
-          path: "Archivos tf/terraform.tfstate" # Asegúrate de que la ruta sea correcta
+      #- name: Subir tfstate como artefacto
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: tfstate
+      #    path: "Archivos tf/terraform.tfstate" # Asegúrate de que la ruta sea correcta
