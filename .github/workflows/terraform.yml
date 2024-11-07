@@ -34,18 +34,21 @@ jobs:
       - name: Terraform init
         id: init
         #run: terraform -chdir="Archivos tf" init -backend-config="bucket=$BUCKET_TF_STATE"
-        run: terraform -chdir="Archivos tf" init  # Inicializa Terraform sin backend con el tfstate que esta en el repositorio
+        run: terraform init  # Inicializa Terraform sin backend con el tfstate que esta en el repositorio
+        working-directory: ./Archivos-tf
        
       - name: Plan Terraform
         id: plan
-        run: terraform -chdir="Archivos tf" plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        working-directory: ./Archivos-tf
         #continue-on-error: true
 
       - name: Terraform Apply
         env:
          #definido previamente otro secreto con la clave publica deployer-key.pub
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
-        run: terraform -chdir="Archivos tf" apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+        working-directory: ./Archivos-tf
 
       #- name: Subir tfstate como artefacto
       #  uses: actions/upload-artifact@v4
