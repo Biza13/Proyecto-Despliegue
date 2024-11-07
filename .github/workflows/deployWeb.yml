@@ -9,16 +9,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
+      # Subir el archivo index.html a la instancia remota y subir la carpeta Pagina y su contenido
       - name: Rsync index.html to remote server
         run: |
-          # Subir el archivo index.html a la instancia remota
+          
           rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./index.html ubuntu@54.227.195.57:/home/ubuntu/
 
       - name: Rsync Pagina directory to remote server
         run: |
-          # Subir la carpeta Pagina y su contenido
           rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./Pagina/ ubuntu@54.227.195.57:/home/ubuntu/
 
       # Conectamos a la instancia remota y movemos los archivos y la carpeta a /var/www/html/
