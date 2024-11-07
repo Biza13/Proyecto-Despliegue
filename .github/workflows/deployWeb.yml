@@ -11,20 +11,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Subir el archivo index.html a la instancia remota y subir la carpeta Pagina y su contenido
-      - name: Rsync index.html to remote server
+      # Crear un archivo temporal para la clave privada
+      - name: Create private key file
         run: |
-          
-          rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./index.html ubuntu@54.227.195.57:/home/ubuntu/
+          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
 
-      - name: Rsync Pagina directory to remote server
+      # Subir el archivo index.html y la carpeta Pagina
+      - name: Rsync files to remote server
         run: |
-          rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./Pagina/ ubuntu@54.227.195.57:/home/ubuntu/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.html ./Pagina/ ubuntu@54.227.195.57:/home/ubuntu/
 
-      # Conectamos a la instancia remota y movemos los archivos y la carpeta a /var/www/html/
+      # Mover los archivos a /var/www/html en la instancia remota
       - name: Move files to /var/www/html on remote server
         run: |
-          ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no ubuntu@54.227.195.57 << 'EOF'
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@54.227.195.57 << 'EOF'
             sudo mv /home/ubuntu/index.html /var/www/html/index.html
             sudo chown www-data:www-data /var/www/html/index.html
             sudo chmod 644 /var/www/html/index.html
@@ -33,6 +34,11 @@ jobs:
             sudo chown -R www-data:www-data /var/www/html/Pagina
             sudo chmod -R 755 /var/www/html/Pagina
           EOF
+
+      # Limpiar el archivo de la clave privada temporal
+      - name: Clean up private key file
+        run: |
+          rm -f deploy_key.pem
          
          
         
