@@ -25,7 +25,7 @@ jobs:
       # Mover los archivos a /var/www/html en la instancia remota
       - name: Move files to /var/www/html on remote server
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@54.227.195.57 << 'EOF'
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@44.223.71.116 << 'EOF'
             sudo mv /home/ubuntu/index.html /var/www/html/index.html
             sudo chown www-data:www-data /var/www/html/index.html
             sudo chmod 644 /var/www/html/index.html
