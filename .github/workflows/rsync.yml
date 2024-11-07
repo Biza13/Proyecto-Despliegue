@@ -1,4 +1,4 @@
-name: DEPLOY
+name: Deploy pagina-web
 on:
   push:
     branches:
