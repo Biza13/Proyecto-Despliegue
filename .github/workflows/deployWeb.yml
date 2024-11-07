@@ -21,7 +21,7 @@ jobs:
       - name: Rsync files to remote server
         run: |
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.html ./Pagina/ ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./Pagina ubuntu@44.223.71.116:/home/ubuntu/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./Pagina ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
 
       # Mover los archivos a /var/www/html en la instancia remota
       - name: Move files to /var/www/html on remote server
