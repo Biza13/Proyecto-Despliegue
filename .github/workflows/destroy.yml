@@ -25,5 +25,12 @@ jobs:
     - name: Terraform Init
       run: terraform init  
 
+    # Descarga el archivo terraform.tfstate del artefacto
+    - name: Download Terraform state artifact
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: terraform-state 
+        path: terraform.tfstate
+
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
