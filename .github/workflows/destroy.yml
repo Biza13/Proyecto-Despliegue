@@ -29,7 +29,7 @@ jobs:
     - name: Download Terraform state artifact
       uses: actions/download-artifact@v4.1.8
       with:
-        name: tfstate.zip
+        name: tfstate
         #directorio donde lo descargara
         path: ./
 
