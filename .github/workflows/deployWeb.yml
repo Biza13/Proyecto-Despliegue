@@ -11,13 +11,13 @@ jobs:
         uses: contention/rsync-deployments@v2.0.0
         with:
          flags: -avz --delete
-         excludes: |
-           Archivos-tf
-           *.tf
-           *.tfstate
-           *.tfvars
-           README.md
-           .github
+         #excludes: |
+         #  Archivos-tf
+         #  *.tf
+         #  *.tfstate
+         #  *.tfvars
+         #  README.md
+         #  .github
          user: root
          host: 54.152.5.248
          localpath: ./Pagina
