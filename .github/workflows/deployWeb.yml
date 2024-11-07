@@ -1,4 +1,4 @@
-name: SCP Files Deployment
+name: RSYNC Files Deployment
 
 on:
   workflow_dispatch:
@@ -6,28 +6,33 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: rsync deployments
-        uses: contention/rsync-deployments@v2.0.0
-        with:
-         flags: -avz --delete
-         #excludes: |
-         #  Archivos-tf
-         #  *.tf
-         #  *.tfstate
-         #  *.tfvars
-         #  README.md
-         #  .github
-         user: root
-         host: 44.223.71.116
-         localpath: ./Pagina
-         remotepath: /var/www/html/
-         deploy_key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Upload index.html
-        run: rsync -avz --delete ./index.html root@54.152.5.248:/var/www/html/
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Rsync index.html to remote server
+        run: |
+          # Subir el archivo index.html a la instancia remota
+          rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./index.html ubuntu@54.227.195.57:/home/ubuntu/
+
+      - name: Rsync Pagina directory to remote server
+        run: |
+          # Subir la carpeta Pagina y su contenido
+          rsync -avz -e "ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no" ./Pagina/ ubuntu@54.227.195.57:/home/ubuntu/
+
+      # Conectamos a la instancia remota y movemos los archivos y la carpeta a /var/www/html/
+      - name: Move files to /var/www/html on remote server
+        run: |
+          ssh -i ${{ secrets.DEPLOY_KEY }} -o StrictHostKeyChecking=no ubuntu@54.227.195.57 << 'EOF'
+            sudo mv /home/ubuntu/index.html /var/www/html/index.html
+            sudo chown www-data:www-data /var/www/html/index.html
+            sudo chmod 644 /var/www/html/index.html
+
+            sudo mv /home/ubuntu/Pagina /var/www/html/Pagina
+            sudo chown -R www-data:www-data /var/www/html/Pagina
+            sudo chmod -R 755 /var/www/html/Pagina
+          EOF
          
          
         
