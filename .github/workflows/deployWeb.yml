@@ -7,41 +7,29 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Get EC2 Instance ID
-        id: get_instance_id
-        run: |
-          INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=instancia" --query "Reservations[0].Instances[0].InstanceId" --output text)
-          echo "instance_id=$INSTANCE_ID" >> $GITHUB_ENV
-
-      - name: Get EC2 Instance Public IP
-        id: get_ip
-        run: |
-          IP=$(aws ec2 describe-instances --instance-ids ${{ env.instance_id }} --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
-          echo "public_ip=$IP" >> $GITHUB_ENV
-
-      - name: Copy index.html to EC2
-        uses: c0c1/scp-action@v1.0
+      - name: rsync deployments
+        uses: contention/rsync-deployments@v2.0.0
         with:
-          src: "index.html"  # Ruta a la ubicación del archivo que deseas copiar
-          host: ${{ env.public_ip }}
-          remote: "/var/www/html"  # Ruta en la instancia EC2 donde deseas copiar el archivo
-          port: 22
-          user: ubuntu  # Usuario para Ubuntu
-          key: ${{ secrets.DEPLOYER_KEY }}  # Clave privada para la conexión SSH
+         flags: -avz --delete
+         excludes: |
+           .git
+           Archivos-tf
+           *.tf
+           *.tfstate
+           *.tfvars
+           README.md
+           .github
+         user: root
+         host: 54.152.5.248
+         localpath: ./Pagina
+         remotepath: /var/www/html/
+         deploy_key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Copy files from Pagina to EC2
-        uses: c0c1/scp-action@v1.0
-        with:
-          src: "Pagina/*"  # Ruta a la carpeta donde están tus archivos
-          host: ${{ env.public_ip }}
-          remote: "/var/www/html"  # Ruta en la instancia EC2 donde deseas copiar los archivos
-          port: 22
-          user: ubuntu  # Usuario para Ubuntu
-          key: ${{ secrets.DEPLOYER_KEY }}  # Clave privada para la conexión SSH
-
-      - name: Change permissions on the remote directory
-        run: |
-          ssh -i ${{ secrets.DEPLOYER_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ env.public_ip }} "sudo chown -R ubuntu:ubuntu /var/www/html && sudo chmod -R 775 /var/www/html"
+      - name: Upload index.html
+        run: rsync -avz --delete ./index.html root@54.152.5.248:/var/www/html/
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
+         
+         
+        
+      
