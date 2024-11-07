@@ -12,7 +12,6 @@ jobs:
         with:
          flags: -avz --delete
          excludes: |
-           .git
            Archivos-tf
            *.tf
            *.tfstate
