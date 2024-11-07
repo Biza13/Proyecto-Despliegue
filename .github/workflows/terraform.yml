@@ -45,8 +45,8 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
-      #- name: Subir tfstate como artefacto
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: tfstate
-      #    path: "Archivos tf/terraform.tfstate" # Asegúrate de que la ruta sea correcta
+      - name: Subir tfstate como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfstate
+          path: terraform.tfstate
