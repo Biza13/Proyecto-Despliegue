@@ -10,9 +10,21 @@ name: Terraform AWS Deployment
 on:
  workflow_dispatch:
 
+  #esto es para elegir que job hacemos si deploy o destroy
+  inputs:
+      job: 
+        description: 'Choose the job to run'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - deploy
+          - destroy
+
 jobs:
 #job para desplegar
   despliegue:   #nombre del job
+    if: ${{ github.event.inputs.job == 'deploy' }}  # Condición para que solo se ejecute si se elige deploy
     runs-on: ubuntu-latest   #maquina virtual en la que lo vamos a lanzar
 
     steps:   #pasos
@@ -54,7 +66,8 @@ jobs:
 
   #job para hacer el destroy
   terraform-destroy:
-    runs-on: ubuntu-latest  
+    if: ${{ github.event.inputs.job == 'destroy' }}  # Condición para que solo se ejecute si se elige destroy
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
