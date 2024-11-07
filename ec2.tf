@@ -63,12 +63,12 @@ resource "aws_security_group" "security" {
 
 # Definir el par de claves en Terraform
 #solo una vez para obtener el par de claves despues reutilizamos las que tenemos
-/* resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
-  #public_key = file("C:/Users/serra/.ssh/deployer-key.pub")
-  #lo hacemos con la variable creada
-  public_key = var.public_key
-} */
+#resource "aws_key_pair" "deployer" {
+#  key_name   = "deployer-key"
+#  #public_key = file("C:/Users/serra/.ssh/deployer-key.pub")
+#  #lo hacemos con la variable creada
+#  public_key = var.public_key
+#} 
 
 #crear una instancia
 resource "aws_instance" "instancia" {
@@ -77,7 +77,7 @@ resource "aws_instance" "instancia" {
   subnet_id = aws_subnet.subred-publica.id
   vpc_security_group_ids = [aws_security_group.security.id]
   #key_name      = aws_key_pair.deployer.key_name  # Usar la clave "deployer-key"
-  key_name = "deployer-key"  # coje el par de claves que ya estan en aws
+  key_name = "deployer-key"  # coje el par de claves que ya estan en aws por el nombre
 
   tags = {
     Name = "instancia"
