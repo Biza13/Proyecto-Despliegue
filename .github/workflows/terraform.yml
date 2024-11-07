@@ -11,6 +11,7 @@ on:
  workflow_dispatch:
 
 jobs:
+#job para desplegar
   despliegue:   #nombre del job
     runs-on: ubuntu-latest   #maquina virtual en la que lo vamos a lanzar
 
@@ -50,3 +51,36 @@ jobs:
         with:
           name: tfstate
           path: terraform.tfstate
+
+  #job para hacer el destroy
+  terraform-destroy:
+    runs-on: ubuntu-latest  
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3 
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: "us-east-1"
+
+    - name: Terraform Init
+      run: terraform init  
+
+    # Descarga el archivo terraform.tfstate del artefacto
+    - name: Download Terraform state artifact
+      uses: actions/download-artifact@v4.1.8
+      with:
+        name: tfstate
+        #directorio donde lo descargara
+        path: ./
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
