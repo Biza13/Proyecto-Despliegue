@@ -14,7 +14,7 @@ jobs:
         switches: -avzr --delete
         path: ./index.html
         remote_path: /var/www/html/
-        remote_host: 54.152.5.248   #ipPublica
+        remote_host: 44.223.71.116   #ipPublica
         remote_user: ubuntu
         remote_key: ${{ secrets.DEPLOY_KEY }}
 
@@ -24,7 +24,7 @@ jobs:
         switches: -avzr --delete
         path: ./Pagina
         remote_path: /var/www/html/
-        remote_host: 54.152.5.248
+        remote_host: 44.223.71.116
         remote_user: ubuntu
         remote_key: ${{ secrets.DEPLOY_KEY }}
         rsh: "ssh -t 'sudo rsync'"  # Ejecuta rsync con sudo
