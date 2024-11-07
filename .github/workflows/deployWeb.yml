@@ -20,13 +20,13 @@ jobs:
       # Subir el archivo index.html y la carpeta Pagina
       - name: Rsync files to remote server
         run: |
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.html ./Pagina/ ubuntu@44.223.71.116:/home/ubuntu/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.html ./Pagina/ ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./Pagina ubuntu@44.223.71.116:/home/ubuntu/
 
       # Mover los archivos a /var/www/html en la instancia remota
       - name: Move files to /var/www/html on remote server
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@44.223.71.116 << 'EOF'
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
             sudo mv /home/ubuntu/index.html /var/www/html/index.html
             sudo chown www-data:www-data /var/www/html/index.html
             sudo chmod 644 /var/www/html/index.html
