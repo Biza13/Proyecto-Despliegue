@@ -1,16 +1,28 @@
-name: Destroy
+name: Destroy Terraform
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:   
 
 jobs:
-  destroy:  
-    runs-on: ubuntu-latest
+  terraform-destroy:
+    runs-on: ubuntu-latest  
+
     steps:
-    #- name: Verificar existencia de Archivos-tf
-      #run: ls -l ./Archivos-tf  # Esto asegurará que el directorio esté presente
-      
+    - name: Checkout code
+      uses: actions/checkout@v4  
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1 
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}  
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: 'us-east-1'
+
+    - name: Terraform Init
+      run: terraform init  
+
     - name: Terraform Destroy
-      if: github.event_name == 'workflow_dispatch'
       run: terraform destroy -auto-approve
-      #working-directory: ./Archivos-tf
