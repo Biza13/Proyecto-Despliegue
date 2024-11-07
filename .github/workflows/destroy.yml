@@ -7,10 +7,10 @@ jobs:
   destroy:  
     runs-on: ubuntu-latest
     steps:
-    - name: Verificar existencia de Archivos-tf
-      run: ls -l ./Archivos-tf  # Esto asegurará que el directorio esté presente
+    #- name: Verificar existencia de Archivos-tf
+      #run: ls -l ./Archivos-tf  # Esto asegurará que el directorio esté presente
       
     - name: Terraform Destroy
       if: github.event_name == 'workflow_dispatch'
       run: terraform destroy -auto-approve
-      working-directory: ./Archivos-tf
+      #working-directory: ./Archivos-tf
