@@ -66,7 +66,7 @@ resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key"
   #public_key = file("C:/Users/serra/.ssh/deployer-key.pub")
   #lo hacemos con la variable creada
-  public_key = var.deployer_public_key
+  public_key = var.public_key
 }
 
 #crear una instancia
