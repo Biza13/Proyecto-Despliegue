@@ -10,4 +10,4 @@ jobs:
     - name: Terraform Destroy
       if: github.event_name == 'workflow_dispatch'
       run: terraform destroy -auto-approve
-      working-directory: ./Archivos-tf
+      working-directory: Archivos-tf
