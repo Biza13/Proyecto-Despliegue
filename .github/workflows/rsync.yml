@@ -27,4 +27,5 @@ jobs:
         remote_host: 54.152.5.248
         remote_user: ubuntu
         remote_key: ${{ secrets.DEPLOY_KEY }}
-        
+        rsh: "ssh -t 'sudo rsync'"  # Ejecuta rsync con sudo
+
