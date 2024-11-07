@@ -38,14 +38,14 @@ jobs:
        
       - name: Plan Terraform
         id: plan
-        run: terraform -chdir="Archivos tf" plan -var "public_key"=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir="Archivos tf" plan -var "public_key=${{ secrets.PUBLIC_KEY }}"
         #continue-on-error: true
 
       - name: Terraform Apply
         env:
          #definido previamente otro secreto con la clave publica deployer-key.pub
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
-        run: terraform -chdir="Archivos tf" apply -auto-approve -var "public_key"=${{ secrets.PUBLIC_KEY }}"
+        run: terraform -chdir="Archivos tf" apply -auto-approve -var "public_key=${{ secrets.PUBLIC_KEY }}"
 
       #- name: Subir tfstate como artefacto
       #  uses: actions/upload-artifact@v4
