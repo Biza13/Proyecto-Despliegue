@@ -29,7 +29,7 @@ jobs:
     - name: Download Terraform state artifact
       uses: actions/download-artifact@v4.1.8
       with:
-        name: terraform-state 
+        name: tfstate 
         path: terraform.tfstate
 
     - name: Terraform Destroy
