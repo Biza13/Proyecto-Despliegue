@@ -76,7 +76,8 @@ resource "aws_instance" "instancia" {
   instance_type = "t2.micro"    #poner el t2
   subnet_id = aws_subnet.subred-publica.id
   vpc_security_group_ids = [aws_security_group.security.id]
-  key_name      = aws_key_pair.deployer.key_name  # Usar la clave "deployer-key"
+  #key_name      = aws_key_pair.deployer.key_name  # Usar la clave "deployer-key"
+  key_name = "deployer-key"  # coje el par de claves que ya estan en aws
 
   tags = {
     Name = "instancia"
