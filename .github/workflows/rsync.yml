@@ -12,7 +12,7 @@ jobs:
       uses: burnett01/rsync-deployments@7.0.1
       with:
         switches: -avzr --delete
-        path: ./ProyectoDespliegue/index.html
+        path: ./index.html
         remote_path: /var/www/html/
         remote_host: 18.235.255.103   #ipPublica
         remote_user: ubuntu
@@ -22,7 +22,7 @@ jobs:
       uses: burnett01/rsync-deployments@7.0.1
       with:
         switches: -avzr --delete
-        path: ./ProyectoDespliegue/Pagina
+        path: ./Pagina
         remote_path: /var/www/html/
         remote_host: 18.235.255.103
         remote_user: ubuntu
