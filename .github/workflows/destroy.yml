@@ -30,7 +30,8 @@ jobs:
       uses: actions/download-artifact@v4.1.8
       with:
         name: tfstate 
-        path: terraform.tfstate
+        #directorio donde lo descargara
+        path: ./
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
