@@ -19,7 +19,7 @@ jobs:
          #  README.md
          #  .github
          user: root
-         host: 54.152.5.248
+         host: 44.223.71.116
          localpath: ./Pagina
          remotepath: /var/www/html/
          deploy_key: ${{ secrets.DEPLOY_KEY }}
