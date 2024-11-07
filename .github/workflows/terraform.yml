@@ -38,7 +38,7 @@ jobs:
        
       - name: Plan Terraform
         id: plan
-        run: terraform -chdir="Archivos tf" plan -var 'public_key=${{ secrets.PUBLIC_KEY }}'
+        run: terraform -chdir="Archivos tf" plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
         #continue-on-error: true
 
       - name: Terraform Apply
