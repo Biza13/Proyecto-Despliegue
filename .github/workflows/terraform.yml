@@ -59,7 +59,7 @@ jobs:
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
       - name: Subir tfstate como artefacto
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4
         with:
           name: tfstate
           path: terraform.tfstate
@@ -90,7 +90,7 @@ jobs:
 
     # Descarga el archivo terraform.tfstate del artefacto
     - name: Download Terraform state artifact
-      uses: actions/download-artifact@v4.1.8
+      uses: actions/download-artifact@v4
       with:
         name: tfstate
         #directorio donde lo descargara
