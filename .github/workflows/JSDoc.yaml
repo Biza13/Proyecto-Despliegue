@@ -1,32 +1,29 @@
-name: Instalar y Generar JSDoc Workflow
+name: Install and Generate JSDoc on EC2
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4.2.2
 
-      - name: Update package list
-        run: sudo apt-get update
+      - name: Create private key file
+        run: |
+          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
 
-      - name: Install Node.js
-        run: sudo apt-get install -y nodejs
-
-      - name: Install npm
-        run: sudo apt install -y npm
-
-      - name: Install JSDoc globally
-        run: npm install -g jsdoc
-
-      - name: Generate JSDoc documentation
-        run: jsdoc ./path/to/archivo.js
-
-      - name: Upload generated documentation as artifact
-        uses: actions/upload-artifact@v3.0.1
-        with:
-          name: jsdoc-docs
-          path: ./out
+      - name: Run commands on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} "
+          sudo apt-get update &&
+          sudo apt-get install -y nodejs &&
+          sudo apt install -y npm &&
+          npm install -g jsdoc &&
+          jsdoc ./path/to/archivo.js
+          "
