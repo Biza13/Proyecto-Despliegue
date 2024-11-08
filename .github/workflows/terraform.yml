@@ -94,7 +94,7 @@ jobs:
       with:
         name: tfstate
         #directorio donde lo descargara
-        #path: ./
+        path: ./
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
