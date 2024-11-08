@@ -92,6 +92,7 @@ resource "aws_instance" "instancia" {
               systemctl enable apache2
               sudo apt-get install php
               sudo apt-get install libapache2-mod-php
+              systemctl restart apache2
               echo "<h1>Hola mundo desde $(hostname -f)</h1>" > /var/www/html/index.html
               EOF
 }
