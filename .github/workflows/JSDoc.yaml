@@ -1,0 +1,32 @@
+name: Instalar y Generar JSDoc Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Update package list
+        run: sudo apt-get update
+
+      - name: Install Node.js
+        run: sudo apt-get install -y nodejs
+
+      - name: Install npm
+        run: sudo apt install -y npm
+
+      - name: Install JSDoc globally
+        run: npm install -g jsdoc
+
+      - name: Generate JSDoc documentation
+        run: jsdoc ./path/to/archivo.js
+
+      - name: Upload generated documentation as artifact
+        uses: actions/upload-artifact@v3.0.1
+        with:
+          name: jsdoc-docs
+          path: ./out
