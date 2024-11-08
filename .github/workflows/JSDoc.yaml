@@ -17,10 +17,18 @@ jobs:
 
       - name: Run commands on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} "
-          sudo apt-get update &&
-          sudo apt-get install -y nodejs &&
-          sudo apt install -y npm &&
-          npm install -g jsdoc &&
-          jsdoc ./path/to/archivo.js
-          "
+         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} 'sudo apt-get update'
+
+      - name: Install nodejs and npm on EC2
+        run: |
+         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} '
+         sudo apt-get install -y nodejs &&
+         sudo apt install -y npm
+         '
+
+      - name: Install jsdoc and generate documentation
+        run: |
+         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} '
+         sudo npm install -g jsdoc &&
+         jsdoc /var/www/html/Pagina/funcion.js
+         '
