@@ -91,10 +91,10 @@ jobs:
     # Descarga el archivo terraform.tfstate del artefacto
     - name: Download Terraform state artifact
       uses: actions/download-artifact@v4
-      #with:
+      with:
         #name: tfstate
         #directorio donde lo descargara
-        #path: ./
+        path: ./
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
