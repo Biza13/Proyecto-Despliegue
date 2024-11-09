@@ -1,3 +1,10 @@
+#para poder usar el tfsate para hacer el destroy creamos una especie de backup o s3
+terraform {
+  backend "local" {
+    path = "terraform.tfstate"
+  }
+}
+
 #Poner el proveedor de terraform, en este caso aws
 terraform {
   required_providers {
