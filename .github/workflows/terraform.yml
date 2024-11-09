@@ -94,29 +94,22 @@ jobs:
       run: terraform init  
 
     # Descarga el archivo terraform.tfstate del artefacto
-    - name: Download Terraform state artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: tfstate
-        #directorio donde lo descargara
-        path: ./
-
-    # Descargar el artefacto usando curl
-    #- name: Remove existing terraform.tfstate if exists
-    #  run: |
-    #   if [ -f terraform.tfstate ]; then
-    #   rm terraform.tfstate
-    #   fi
-
     #- name: Download Terraform state artifact
-    #  run: |
-    #   curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294 -o terraform.tfstate
-    #   ls -l terraform.tfstate
+    #  uses: actions/download-artifact@v4
+    #  with:
+    #    name: tfstate
+        #directorio donde lo descargara
+    #    path: ./
 
-    #- name: Unzip the Terraform state artifact
-    #  run: |
-    #    unzip terraform.tfstate.zip -d ./ 
-    #    ls -l
+    - name: Download Terraform state artifact
+      run: |
+       curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046 -o terraform.tfstate
+       ls -l terraform.tfstate
+
+    - name: Unzip the Terraform state artifact
+      run: |
+        unzip terraform.tfstate.zip -d ./ 
+        ls -l
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
