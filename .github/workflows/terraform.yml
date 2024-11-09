@@ -63,11 +63,19 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
-      - name: Subir tfstate como artefacto
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfstate
-          path: terraform.tfstate
+      #- name: Subir tfstate como artefacto
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: tfstate
+      #    path: terraform.tfstate
+
+      - name: Commit tfstate
+        run: |
+         git config --global user.email "serrano_0_1@hotmail.com"
+         git config --global user.name "Biza13"
+         git add terraform.tfstate
+         git commit -m "Update terraform state"
+         git push
 
   #job para hacer el destroy
   terraform-destroy:
@@ -99,25 +107,7 @@ jobs:
     #  with:
     #    name: tfstate
         #directorio donde lo descargara
-    #    path: ./
-
-    - name: Download Terraform state artifact
-      run: |
-       curl -L -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" -o tfstate.zip https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046
-       file tfstate.zip
-       ls -l
-
-    - name: Unzip terraform.tfstate.zip
-      run: |
-        unzip tfstate.zip
-        ls -l
-
-    # el cat muestra el contenido del archivo terraform.tfstate
-    # el jq valida si el archivo es un JSON válido
-    - name: Verificar formato del archivo terraform.tfstate
-      run: |
-       cat terraform.tfstate  
-       jq . terraform.tfstate  
+    #    path: ./  
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
