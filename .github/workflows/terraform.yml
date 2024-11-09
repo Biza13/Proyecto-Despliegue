@@ -21,6 +21,11 @@ on:
           - deploy
           - destroy
 
+#permisos para ver si descarga el artefacto
+permissions:
+  contents: write
+  actions: read
+
 jobs:
 #job para desplegar
   despliegue:   #nombre del job
