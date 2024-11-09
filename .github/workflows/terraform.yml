@@ -108,8 +108,8 @@ jobs:
 
     - name: Verify the downloaded file
       run: |
-        ls -l tfstate.zip  # Esto te mostrará el tamaño del archivo
-        file tfstate.zip   # Esto intentará identificar el tipo del archivo
+        ls -l terraform.tfstate  # Esto te mostrará el tamaño del archivo
+        file terraform.tfstate   # Esto intentará identificar el tipo del archivo
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
