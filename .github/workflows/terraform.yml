@@ -103,7 +103,7 @@ jobs:
 
     - name: Download Terraform state artifact
       run: |
-       curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046 -o terraform.tfstate
+       curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046
        ls -l
 
     # el cat muestra el contenido del archivo terraform.tfstate
