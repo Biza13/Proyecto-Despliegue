@@ -104,12 +104,11 @@ jobs:
     # Descargar el artefacto usando curl
     - name: Download Terraform state artifact using curl
       run: |
-        curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294 -o terraform.tfstate
+        curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294
 
-    - name: Verify the downloaded file
+    - name: Verificar archivo descargado
       run: |
-        ls -l terraform.tfstate  # Esto te mostrará el tamaño del archivo
-        file terraform.tfstate   # Esto intentará identificar el tipo del archivo
+        ls -l
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
