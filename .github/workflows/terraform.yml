@@ -106,9 +106,5 @@ jobs:
       run: |
         curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294 -o tfstate.zip
 
-    # Descomprimir el archivo .zip
-    - name: Unzip the terraform state artifact
-      run: unzip tfstate.zip -d ./ 
-
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
