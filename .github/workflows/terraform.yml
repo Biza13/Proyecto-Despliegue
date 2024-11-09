@@ -104,6 +104,7 @@ jobs:
     - name: Download Terraform state artifact
       run: |
        curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046 -o tfstate.zip
+       file tfstate.zip
        ls -l
 
     - name: Unzip terraform.tfstate.zip
