@@ -68,15 +68,7 @@ jobs:
       #  with:
       #    name: tfstate
       #    path: terraform.tfstate
-
-      - name: Commit tfstate
-        run: |
-         git config --global user.email "serrano_0_1@hotmail.com"
-         git config --global user.name "Biza13"
-         git add terraform.tfstate
-         git commit -m "Update terraform state"
-         git push https://github-actions:${{ secrets.TOKEN_GITHUB }}@github.com/Biza13/Proyecto-Despliegue.git HEAD:main
-
+      
   #job para hacer el destroy
   terraform-destroy:
     if: ${{ github.event.inputs.job == 'destroy' }}  # Condición para que solo se ejecute si se elige destroy
