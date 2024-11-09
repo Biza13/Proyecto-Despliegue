@@ -23,7 +23,7 @@ on:
 
 #permisos para ver si descarga el artefacto
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 jobs:
