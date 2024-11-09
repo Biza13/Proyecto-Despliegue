@@ -75,7 +75,7 @@ jobs:
          git config --global user.name "Biza13"
          git add terraform.tfstate
          git commit -m "Update terraform state"
-         git push
+         git push https://github-actions:${{ secrets.TOKEN_GITHUB }}@github.com/Biza13/Proyecto-Despliegue.git HEAD:main
 
   #job para hacer el destroy
   terraform-destroy:
