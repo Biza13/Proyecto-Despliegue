@@ -102,12 +102,16 @@ jobs:
     #    path: ./
 
     # Descargar el artefacto usando curl
-    - name: Download Terraform state artifact using curl
+    - name: Download Terraform state artifact
       run: |
-        curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294
+        echo "Downloading artifact..."
+        curl -L -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -o terraform.tfstate.zip \
+        https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11756007471/artifacts/2166577294
 
-    - name: Verificar archivo descargado
+    - name: Unzip the Terraform state artifact
       run: |
+        unzip terraform.tfstate.zip -d ./ 
         ls -l
 
     - name: Terraform Destroy
