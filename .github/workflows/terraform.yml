@@ -97,7 +97,7 @@ jobs:
     - name: Download Terraform state artifact
       uses: actions/download-artifact@v4
       with:
-        #name: tfstate
+        name: tfstate
         #directorio donde lo descargara
         path: ./
         run-id: 11756007471
