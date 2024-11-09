@@ -106,10 +106,12 @@ jobs:
        curl -L https://github.com/Biza13/Proyecto-Despliegue/actions/runs/11757046864/artifacts/2166744046 -o terraform.tfstate
        ls -l
 
-    #- name: Unzip the Terraform state artifact
-    #  run: |
-    #    unzip terraform.tfstate.zip -d ./ 
-    #    ls -l
+    # el cat muestra el contenido del archivo terraform.tfstate
+    # el jq valida si el archivo es un JSON válido
+    - name: Verificar formato del archivo terraform.tfstate
+      run: |
+       cat terraform.tfstate  
+       jq . terraform.tfstate  
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
