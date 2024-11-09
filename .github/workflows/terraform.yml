@@ -68,7 +68,7 @@ jobs:
   terraform-destroy:
     if: ${{ github.event.inputs.job == 'destroy' }}  # Condición para que solo se ejecute si se elige destroy
     runs-on: ubuntu-latest
-    #needs: despliegue  #aqui le digo que no se puede ejecutar sin qu ese haya ejecutado el despliegue primero
+    needs: despliegue  #aqui le digo que no se puede ejecutar sin qu ese haya ejecutado el despliegue primero
 
     steps:
     - name: Checkout code
