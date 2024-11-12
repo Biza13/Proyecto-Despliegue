@@ -11,20 +11,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Crear un archivo temporal para la clave privada
-      - name: Create private key file
+      - name: Crear archivo private key
         run: |
           echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
 
-      # Subir el archivo index.html y la carpeta Pagina
-      - name: Rsync files to remote server
+      - name: Con Rsync subir los archivos a el servidor remoto
         run: |
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./usuarios_blockDeNotas-mvc2 ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
 
-      # Mover los archivos a /var/www/html en la instancia remota
-      - name: Move files to /var/www/html on remote server
+      - name: Mover archivos a /var/www/html en la instancia
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
             sudo mv /home/ubuntu/index.php /var/www/html/index.php
@@ -34,9 +31,10 @@ jobs:
             sudo mv /home/ubuntu/usuarios_blockDeNotas-mvc2 /var/www/html/usuarios_blockDeNotas-mvc2
             sudo chown -R www-data:www-data /var/www/html/usuarios_blockDeNotas-mvc2
             sudo chmod -R 755 /var/www/html/usuarios_blockDeNotas-mvc2
+
+            sudo rm -f /var/www/html/index.html
           EOF
 
-      # Limpiar el archivo de la clave privada temporal
-      - name: Clean up private key file
+      - name: Borrar archivo private key
         run: |
           rm -f deploy_key.pem
