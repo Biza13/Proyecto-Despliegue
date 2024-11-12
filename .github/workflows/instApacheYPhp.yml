@@ -8,6 +8,9 @@ jobs:
      runs-on: ubuntu-latest
 
      steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+     
      # Crear un archivo temporal para la clave privada
      - name: Crear el archivo de private key
        run: |
