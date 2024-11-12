@@ -63,11 +63,8 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
-      #- name: Subir tfstate como artefacto
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: tfstate
-      #    path: terraform.tfstate
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://cubo-s3-begona/ --region us-east-1
       
   #job para hacer el destroy
   terraform-destroy:
@@ -93,13 +90,8 @@ jobs:
     - name: Terraform Init
       run: terraform init  
 
-    # Descarga el archivo terraform.tfstate del artefacto
-    #- name: Download Terraform state artifact
-    #  uses: actions/download-artifact@v4
-    #  with:
-    #    name: tfstate
-        #directorio donde lo descargara
-    #    path: ./  
+    - name: Descargar tfstate desde el bucket de S3
+      run: aws s3 cp s3://cubo-s3-begona/terraform.tfstate terraform.tfstate --region us-east-1 
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
