@@ -1,4 +1,4 @@
-name: RSYNC Files Deployment
+name: Subir pagina html
 
 on:
   workflow_dispatch:
