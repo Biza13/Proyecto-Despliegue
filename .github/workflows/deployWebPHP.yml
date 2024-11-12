@@ -27,11 +27,11 @@ jobs:
       - name: Move files to /var/www/html on remote server
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
-            sudo mv /home/ubuntu/index.html /var/www/html/index.php
+            sudo mv /home/ubuntu/index.php /var/www/html/index.php
             sudo chown www-data:www-data /var/www/html/index.php
             sudo chmod 644 /var/www/html/index.php
 
-            sudo mv /home/ubuntu/Pagina /var/www/html/usuarios_blockDeNotas-mvc2
+            sudo mv /home/ubuntu/usuarios_blockDeNotas-mvc2 /var/www/html/usuarios_blockDeNotas-mvc2
             sudo chown -R www-data:www-data /var/www/html/usuarios_blockDeNotas-mvc2
             sudo chmod -R 755 /var/www/html/usuarios_blockDeNotas-mvc2
           EOF
