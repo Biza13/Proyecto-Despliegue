@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = aws_vpc.Desarrollo-web-VPC
+  value = aws_vpc.Desarrollo-web-VPC.id
   description = "El ID de la VPC"
 }
 
@@ -22,4 +22,16 @@ output "subred_privada_id" {
 output "instance_public_ip" {
   description = "IP publica de instancia EC2"
   value = aws_instance.instancia.public_ip
+}
+
+output "s3" {
+  value = aws_s3_bucket.s3.id
+}
+
+output "s3_domain_name" {
+  value = aws_s3_bucket.s3.bucket_domain_name
+}
+
+output "s3_regional_domain_name" {
+  value = aws_s3_bucket.s3.bucket_regional_domain_name
 }
