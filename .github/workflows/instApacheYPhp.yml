@@ -1,0 +1,19 @@
+name: script instalar aparche y php
+
+on:
+  workflow_dispatch:
+
+jobs:
+  script-instalacion:
+     runs-on: ubuntu-latest
+
+     steps:
+     # Crear un archivo temporal para la clave privada
+     - name: Crear private key archivo
+       run: |
+          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
+     
+     - name: subir el script a la ec2
+       run: rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./script.sh ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+     
