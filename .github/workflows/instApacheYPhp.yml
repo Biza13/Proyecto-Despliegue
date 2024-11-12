@@ -23,7 +23,7 @@ jobs:
         ls -al     
      
      - name: subir el script a la ec2
-       run: rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./script.sh ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+       run: scp -i deploy_key.pem -o StrictHostKeyChecking=no ./script.sh ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
      
      - name: Dar permisos y ejecutar el script remotamente
        run: |
