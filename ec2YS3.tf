@@ -83,7 +83,7 @@ resource "aws_instance" "instancia" {
     Name = "instancia"
   }
 
-  user_data = <<-EOF
+  /*user_data = <<-EOF
               #!/bin/bash
               # Datos de usuario
               apt update -y
@@ -94,5 +94,22 @@ resource "aws_instance" "instancia" {
               sudo apt-get install libapache2-mod-php
               systemctl restart apache2
               echo "<h1>Hola mundo desde $(hostname -f)</h1>" > /var/www/html/index.html
-              EOF
+              EOF*/
 }
+
+#creacion del bucket s3 para guardar archivos
+resource "aws_s3_bucket" "s3"{    
+  bucket = var.s3  #nombre que le pondremos al bucket
+
+  tags = {
+    name = "bucket"
+    Enviroment = "Dev"
+  }
+}
+
+/* resource "aws_s3_bucket_versioning" "versioning_s3" {
+  bucket = aws_s3_bucket.s3.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+} */
