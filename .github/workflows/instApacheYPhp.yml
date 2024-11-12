@@ -14,9 +14,13 @@ jobs:
           echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
 
-     # Verificar la existencia del archivo script.sh en el repositorio
-     - name: Listar archivos en el directorio
-       run: ls -al     
+     # Verificar que el archivo 'script.sh' está en el directorio correcto
+     - name: Verificar directorio actual y archivos
+       run: |
+        echo "Directorio actual:"
+        pwd
+        echo "Archivos en el directorio:"
+        ls -al     
      
      - name: subir el script a la ec2
        run: rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./script.sh ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
