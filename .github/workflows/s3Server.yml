@@ -30,7 +30,7 @@ jobs:
           aws-region: "us-east-1"
           
       - name: Subir a S3 bucket el index
-        run: aws s3 cp ./index.html s3://<nombre-del-bucket>/index.html
+        run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html
 
 
       - name: Subir a S3 bucket la carpeta Pagina  
