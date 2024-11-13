@@ -28,10 +28,13 @@ output "s3" {
   value = aws_s3_bucket.s3.id
 }
 
-output "s3_domain_name" {
-  value = aws_s3_bucket.s3.bucket_domain_name
+output "website_url" {
+  value = "http://${aws_s3_bucket.s3.bucket}.s3-website-${var.region}.amazonaws.com"
+}
+output "website_domain_name" {
+  value = aws_s3_bucket.s3.website_domain
 }
 
-output "s3_regional_domain_name" {
-  value = aws_s3_bucket.s3.bucket_regional_domain_name
+output "website_regional_domain_name" {
+  value = aws_s3_bucket.s3.website_regional_domain
 }
