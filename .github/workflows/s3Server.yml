@@ -34,4 +34,4 @@ jobs:
 
 
       - name: Subir a S3 bucket la carpeta Pagina  
-        run: aws s3 sync ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}
+        run: aws s3 sync ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina
