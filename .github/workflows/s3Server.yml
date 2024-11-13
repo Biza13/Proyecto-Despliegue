@@ -28,9 +28,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: "us-east-1"
-          
-      - name: Subir a S3 bucket el index
-        run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html
+
+      #He de deshabilitar el bloqueo de acceso publico sino no puedo habilitar el hosting
+      - name: Deshabilitar bloqueo de acceso público
+        run: |
+          aws s3api put-bucket-public-access-block \
+            --bucket ${{ secrets.AWS_S3_BUCKET }} \
+            --public-access-block-configuration \
+            BlockPublicAcls=false \
+            IgnorePublicAcls=false \
+            BlockPublicPolicy=false \
+            RestrictPublicBuckets=false
 
       - name: Habilitar el hosting de página web estática
         run: |
@@ -50,5 +58,18 @@ jobs:
             ]
           }'
 
+      - name: Subir a S3 bucket el index
+        run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html    
+
       - name: Subir a S3 bucket la carpeta Pagina  
         run: aws s3 sync ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina
+
+      - name: Volver a habilitar el bloqueo de acceso público
+        run: |
+          aws s3api put-bucket-public-access-block \
+            --bucket ${{ secrets.AWS_S3_BUCKET }} \
+            --public-access-block-configuration \
+            BlockPublicAcls=true \
+            IgnorePublicAcls=true \
+            BlockPublicPolicy=true \
+            RestrictPublicBuckets=true  
