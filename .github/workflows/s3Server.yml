@@ -47,17 +47,17 @@ jobs:
 
       - name: Configurar la política de acceso público
         run: |
-         aws s3api put-bucket-policy --bucket ${{ secrets.AWS_S3_BUCKET }} --policy "{
-           \"Version\": \"2012-10-17\",
-           \"Statement\": [
-             {
-               \"Effect\": \"Allow\",
-               \"Principal\": \"*\",
-               \"Action\": \"s3:GetObject\",
-               \"Resource\": \"arn:aws:s3:::${{ secrets.AWS_S3_BUCKET }}/*\"
-             }
-           ]
-         }"
+          aws s3api put-bucket-policy --bucket ${{ secrets.AWS_S3_BUCKET }} --policy '{
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::${{ secrets.AWS_S3_BUCKET }}/*"
+              }
+            ]
+          }'
 
       - name: Subir a S3 bucket el index
         run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html    
