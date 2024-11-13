@@ -1,4 +1,4 @@
-name: Deploy production build
+name: Deploy s3 como servidor
 
 on:
   workflow_dispatch:
