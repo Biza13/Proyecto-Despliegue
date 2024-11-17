@@ -1,4 +1,4 @@
-name: script instalar aparche y php
+name: script instalar nginx y php
 
 on:
   workflow_dispatch:
