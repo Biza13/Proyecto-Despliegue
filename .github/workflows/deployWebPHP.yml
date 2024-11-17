@@ -19,7 +19,7 @@ jobs:
       - name: Con Rsync subir los archivos a el servidor remoto
         run: |
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./usuarios_blockDeNotas-mvc2 ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
 
       - name: Mover archivos a /var/www/html en la instancia
         run: |
@@ -28,9 +28,9 @@ jobs:
             sudo chown www-data:www-data /var/www/html/index.php
             sudo chmod 644 /var/www/html/index.php
 
-            sudo mv /home/ubuntu/usuarios_blockDeNotas-mvc2 /var/www/html/usuarios_blockDeNotas-mvc2
-            sudo chown -R www-data:www-data /var/www/html/usuarios_blockDeNotas-mvc2
-            sudo chmod -R 755 /var/www/html/usuarios_blockDeNotas-mvc2
+            sudo mv /home/ubuntu/MiProyecto /var/www/html/MiProyecto
+            sudo chown -R www-data:www-data /var/www/html/MiProyecto
+            sudo chmod -R 755 /var/www/html/MiProyecto
 
             sudo rm -f /var/www/html/index.html
           EOF
