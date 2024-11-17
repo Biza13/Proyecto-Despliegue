@@ -24,13 +24,13 @@ jobs:
       - name: Mover archivos a /var/www/html en la instancia
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP_NGINX }} << 'EOF'
-            sudo mv /home/ec2-user/index.php /var/www/html/index.php
-            sudo chown www-data:www-data /var/www/html/index.php
-            sudo chmod 644 /var/www/html/index.php
+            sudo mv /home/ec2-user/index.php /usr/share/nginx/html/index.php
+            sudo chown www-data:www-data /usr/share/nginx/html/index.php
+            sudo chmod 644 /usr/share/nginx/html/index.php
 
-            sudo mv /home/ec2-user/MiProyecto /var/www/html/MiProyecto
-            sudo chown -R www-data:www-data /var/www/html/MiProyecto
-            sudo chmod -R 755 /var/www/html/MiProyecto
+            sudo mv /home/ec2-user/MiProyecto /usr/share/nginx/html/MiProyecto
+            sudo chown -R www-data:www-data /usr/share/nginx/html/MiProyecto
+            sudo chmod -R 755 /usr/share/nginx/html/MiProyecto
 
             sudo rm -f /var/www/html/index.html
           EOF
