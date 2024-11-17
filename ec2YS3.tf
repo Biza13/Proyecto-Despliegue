@@ -24,6 +24,23 @@ data "aws_ami" "ubuntu" {
 
 }
 
+#otra imagen para amazon linux
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["137112412989"] # Amazon
+}
+
 #crear un grupo de seguridad para ssh y http/https
 resource "aws_security_group" "security" {
   name = "seguridad"
@@ -95,6 +112,20 @@ resource "aws_instance" "instancia" {
               systemctl restart apache2
               echo "<h1>Hola mundo desde $(hostname -f)</h1>" > /var/www/html/index.html
               EOF*/
+}
+
+#otra instancia con amazon linux
+resource "aws_instance" "instancia-nginx" {
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t2.micro"    #poner el t2
+  subnet_id = aws_subnet.subred-publica.id
+  vpc_security_group_ids = [aws_security_group.security.id]
+  #key_name      = aws_key_pair.deployer.key_name  # Usar la clave "deployer-key"
+  key_name = "deployer-key"  # coje el par de claves que ya estan en aws por el nombre
+
+  tags = {
+    Name = "instancia"
+  }
 }
 
 #creacion del bucket s3 para guardar archivos
