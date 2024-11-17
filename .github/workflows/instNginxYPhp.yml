@@ -18,13 +18,13 @@ jobs:
           chmod 600 deploy_key.pem  
      
      - name: subir el script a la ec2 con amazon linux
-       run: scp -i deploy_key.pem -o StrictHostKeyChecking=no ./script-nginx.sh ec2-user@${{ secrets.PUBLIC_IP_NGINX }}:/home/ubuntu/
+       run: scp -i deploy_key.pem -o StrictHostKeyChecking=no ./script-nginx.sh ec2-user@${{ secrets.PUBLIC_IP_NGINX }}:/home/ec2-user/
      
      - name: Dar permisos de ejecucion y ejecutar el script
        run: |
         ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP_NGINX }} << 'EOF'
-        chmod +x /home/ubuntu/script-nginx.sh
-        /home/ubuntu/script-nginx.sh
+        chmod +x /home/ec2-user/script-nginx.sh
+        /home/ec2-user/script-nginx.sh
         EOF
 
      # Limpiar el archivo de la clave privada
