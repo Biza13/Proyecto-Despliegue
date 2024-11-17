@@ -19,9 +19,16 @@ output "subred_privada_id" {
   value = aws_instance.instancia
 } */
 
+#ip publica de instancia con ubuntu
 output "instance_public_ip" {
   description = "IP publica de instancia EC2"
   value = aws_instance.instancia.public_ip
+}
+
+#ip publica de instancia con amazon linux
+output "instance_public_ip" {
+  description = "IP publica de instancia EC2 nginx"
+  value = aws_instance.instancia-nginx.public_ip
 }
 
 output "s3" {
