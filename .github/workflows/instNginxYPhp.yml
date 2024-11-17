@@ -1,0 +1,33 @@
+name: script instalar aparche y php
+
+on:
+  workflow_dispatch:
+
+jobs:
+  script-instalacion:
+     runs-on: ubuntu-latest
+
+     steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+     
+     # Crear un archivo temporal para la clave privada
+     - name: Crear el archivo de private key
+       run: |
+          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem  
+     
+     - name: subir el script a la ec2 con amazon linux
+       run: scp -i deploy_key.pem -o StrictHostKeyChecking=no ./script-nginx.sh ec2-user@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+     
+     - name: Dar permisos de ejecucion y ejecutar el script
+       run: |
+        ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP }} << 'EOF'
+        chmod +x /home/ubuntu/script-nginx.sh
+        /home/ubuntu/script-nginx.sh
+        EOF
+
+     # Limpiar el archivo de la clave privada
+     - name: eliminar el archivo de private key
+       run: |
+          rm -f deploy_key.pem
