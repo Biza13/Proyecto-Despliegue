@@ -30,6 +30,7 @@ jobs:
 
         #sudo mv /home/ubuntu/MiProyecto /var/www/html/MiProyecto
         run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
             sudo mv /home/ubuntu/MiProyecto/* /var/www/html/
             sudo chown -R www-data:www-data /var/www/html/MiProyecto
             sudo chmod -R 755 /var/www/html/MiProyecto
