@@ -17,23 +17,25 @@ jobs:
           chmod 600 deploy_key.pem
 
       - name: Con Rsync subir los archivos a el servidor remoto
-        run: |
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+        #rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
+        run: 
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto ubuntu@${{ secrets.PUBLIC_IP }}:/home/ubuntu/
 
       - name: Mover archivos a /var/www/html en la instancia
-        run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
-            sudo mv /home/ubuntu/index.php /var/www/html/index.php
-            sudo chown www-data:www-data /var/www/html/index.php
-            sudo chmod 644 /var/www/html/index.php
+        #run: |
+        #  ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
+        #    sudo mv /home/ubuntu/index.php /var/www/html/index.php
+        #    sudo chown www-data:www-data /var/www/html/index.php
+        #    sudo chmod 644 /var/www/html/index.php
 
-            sudo mv /home/ubuntu/MiProyecto /var/www/html/MiProyecto
+        #sudo mv /home/ubuntu/MiProyecto /var/www/html/MiProyecto
+        run: |
+            sudo mv /home/ubuntu/MiProyecto/* /var/www/html/
             sudo chown -R www-data:www-data /var/www/html/MiProyecto
             sudo chmod -R 755 /var/www/html/MiProyecto
 
             sudo rm -f /var/www/html/index.html
-          EOF
+            EOF
 
       - name: Borrar archivo private key
         run: |
