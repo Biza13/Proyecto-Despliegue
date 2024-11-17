@@ -32,11 +32,10 @@ jobs:
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PUBLIC_IP }} << 'EOF'
             sudo mv /home/ubuntu/MiProyecto/* /var/www/html/
-            sudo chown -R www-data:www-data /var/www/html/MiProyecto
-            sudo chmod -R 755 /var/www/html/MiProyecto
-
+            sudo chown -R www-data:www-data /var/www/html/
+            sudo chmod -R 755 /var/www/html/
             sudo rm -f /var/www/html/index.html
-            EOF
+          EOF
 
       - name: Borrar archivo private key
         run: |
