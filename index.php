@@ -17,6 +17,6 @@
 </head>
 <body>
     <h1>Bienvenido al muro de la vaca Lola</h1>
-    <a href="./usuarios_blockDeNotas-mvc2/index.php">Click aqui para ir al muro</a>
+    <a href="./Miproyecto/index.php">Click aqui para ir al muro</a>
 </body>
 </html>
