@@ -124,7 +124,7 @@ resource "aws_instance" "instancia-nginx" {
   key_name = "deployer-key"  # coje el par de claves que ya estan en aws por el nombre
 
   tags = {
-    Name = "instancia"
+    Name = "instancia-nginx"
   }
 }
 
