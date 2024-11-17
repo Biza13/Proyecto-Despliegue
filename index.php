@@ -17,6 +17,7 @@
 </head>
 <body>
     <h1>Bienvenido al muro de la vaca Lola</h1>
+    <?php echo entra ?>
     <a href="./MiProyecto/index.php">Click aqui para ir al muro</a>
 </body>
 </html>
