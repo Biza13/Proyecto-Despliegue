@@ -30,7 +30,7 @@ jobs:
 
       - name: Upload documentation to S3
         run: |
-          run: aws s3 sync ./docs s3://${{ secrets.AWS_S3_BUCKET }}/Pagina/docs
+          aws s3 sync ./docs s3://${{ secrets.AWS_S3_BUCKET }}/Pagina/docs
 
       - name: Eliminar carpeta docs
         run: |
