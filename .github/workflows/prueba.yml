@@ -1,0 +1,134 @@
+name: Terraform AWS Deployment
+
+#evento para que se deployee cuando se hace el push
+#on:
+#  push:   #evento a hacer en este caso cuando hagamos un push
+#    branches:   #en la rama main
+#      - main
+
+#Este evento es para que solo se deployee si se lo digo manualmente
+on:
+ workflow_dispatch:
+
+jobs:
+#job para desplegar
+  despliegue:   #nombre del job
+    runs-on: ubuntu-latest
+    steps:   #pasos
+          #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
+      - name: Checkout   #nombre del action
+        uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
+      
+      - name: Configurar credenciales aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+          
+          #este paso es para instalar terraform en la maquina virtual
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init
+        id: init
+        run: terraform init  
+       
+      - name: Plan Terraform
+        id: plan
+        run: terraform plan -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+  
+      - name: Terraform Apply
+        env:
+         #definido previamente otro secreto con la clave publica deployer-key.pub
+         TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
+        run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
+
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://cubo-s3-begona/ --region us-east-1
+
+  #segundo job subir la pagina al bucket      
+  SubirPaginaEstatica: 
+    needs: despliegue
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checking out code
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
+
+      #He de deshabilitar el bloqueo de acceso publico sino no puedo habilitar el hosting
+      - name: Deshabilitar bloqueo de acceso público temporalmente
+        run: |
+         aws s3api put-public-access-block \
+         --bucket ${{ secrets.AWS_S3_BUCKET }} \
+         --public-access-block-configuration '{
+          "BlockPublicAcls": false,
+          "IgnorePublicAcls": false,
+          "BlockPublicPolicy": false,
+          "RestrictPublicBuckets": false
+         }'
+
+      - name: Habilitar el hosting de página web estática
+        run: |
+          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document 404.html
+
+      - name: Configurar la política de acceso público
+        run: |
+          aws s3api put-bucket-policy --bucket ${{ secrets.AWS_S3_BUCKET }} --policy '{
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "PublicReadGetObject",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": [
+                "s3:GetObject"
+                ],
+                "Resource": [
+                "arn:aws:s3:::${{ secrets.AWS_S3_BUCKET }}/*"
+                ]
+              }
+            ]
+          }'
+
+      - name: Subir a S3 bucket el index
+        run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html    
+
+      - name: Subir a S3 bucket la carpeta Pagina  
+        run: aws s3 sync ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina
+  #generar y subir la carpeta de docs
+  Documentacion:
+    needs: SubirPaginaEstatica
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}  # Región en la que está tu bucket de S3
+
+      - name: Install Node.js and npm
+        run: |
+          sudo apt-get update
+          sudo apt install -y nodejs npm
+
+      - name: Install jsdoc and generate documentation
+        run: |
+          sudo npm install -g jsdoc
+          sudo jsdoc /Pagina/funcion.js -d ./docs
+
+      - name: Upload documentation to S3
+        run: |
+          aws s3 cp ./docs s3://${{ secrets.S3_BUCKET_NAME }}/Pagina --recursive
