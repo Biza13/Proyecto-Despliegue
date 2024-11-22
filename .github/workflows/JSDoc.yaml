@@ -1,4 +1,4 @@
-name: Install and Generate JSDoc on EC2
+name: Instalar y Generar JSDoc en S3
 
 on:
   workflow_dispatch:
