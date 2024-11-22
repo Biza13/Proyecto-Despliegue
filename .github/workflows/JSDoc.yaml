@@ -30,3 +30,7 @@ jobs:
       - name: Upload documentation to S3
         run: |
           aws s3 cp ./docs s3://${{ secrets.S3_BUCKET_NAME }}/Pagina --recursive
+
+      - name: Eliminar carpeta docs
+        run: |
+          rm -rf ./docs
