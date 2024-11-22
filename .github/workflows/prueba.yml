@@ -48,6 +48,18 @@ jobs:
       - name: Subir tfstate al bucket de S3
         run: aws s3 cp terraform.tfstate s3://cubo-s3-begona/ --region us-east-1
 
+      #aqui creo una variable de entorno de githubActions con el output de el nombre del bucket
+      - name: Capturar output de Terraform
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV  
+        
+      #variable de entorno para la ip de debian
+      - name: capturar output de ip ec2 de debian  
+        run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+
+      #variable de entorno para la ip de fedora
+      - name: capturar output de la ip de ec2 de fedora
+        run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
+
   #segundo job subir la pagina al bucket      
   SubirPaginaEstatica: 
     needs: despliegue
@@ -68,7 +80,7 @@ jobs:
       - name: Deshabilitar bloqueo de acceso público temporalmente
         run: |
          aws s3api put-public-access-block \
-         --bucket ${{ secrets.AWS_S3_BUCKET }} \
+         --bucket ${{ env.bucket_nombre }} \
          --public-access-block-configuration '{
           "BlockPublicAcls": false,
           "IgnorePublicAcls": false,
@@ -78,11 +90,11 @@ jobs:
 
       - name: Habilitar el hosting de página web estática
         run: |
-          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document 404.html
+          aws s3 website s3://${{ senv.bucket_nombre }} --index-document index.html --error-document 404.html
 
       - name: Configurar la política de acceso público
         run: |
-          aws s3api put-bucket-policy --bucket ${{ secrets.AWS_S3_BUCKET }} --policy '{
+          aws s3api put-bucket-policy --bucket ${{ env.bucket_nombre }} --policy '{
             "Version": "2012-10-17",
             "Statement": [
               {
@@ -93,17 +105,17 @@ jobs:
                 "s3:GetObject"
                 ],
                 "Resource": [
-                "arn:aws:s3:::${{ secrets.AWS_S3_BUCKET }}/*"
+                "arn:aws:s3:::${{ env.bucket_nombre }}/*"
                 ]
               }
             ]
           }'
 
       - name: Subir a S3 bucket el index
-        run: aws s3 cp ./index.html s3://${{ secrets.AWS_S3_BUCKET }}/index.html    
+        run: aws s3 cp ./index.html s3://${{ env.bucket_nombre }}/index.html    
 
       - name: Subir a S3 bucket la carpeta Pagina  
-        run: aws s3 sync ./Pagina s3://${{ secrets.AWS_S3_BUCKET }}/Pagina
+        run: aws s3 sync ./Pagina s3://${{ env.bucket_nombre }}/Pagina
   #generar y subir la carpeta de docs
   Documentacion:
     needs: SubirPaginaEstatica
@@ -130,7 +142,7 @@ jobs:
           sudo jsdoc /Pagina/funcion.js -d ./docs
 
       - name: Subir documentacion al S3
-        run: aws s3 cp ./docs s3://${{ secrets.S3_BUCKET_NAME }}/Pagina --recursive
+        run: aws s3 cp ./docs s3://${{ env.bucket_nombre }}/Pagina --recursive
 
       - name: Eliminar carpeta docs
         run: rm -rf ./docs    
