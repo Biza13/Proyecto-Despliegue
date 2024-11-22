@@ -10,12 +10,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4.2.2
 
-      - name: Set up AWS credentials
+      - name: Configurar credenciales aws
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}  # Región en la que está tu bucket de S3
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Node.js and npm
         run: |
