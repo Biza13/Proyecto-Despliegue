@@ -20,7 +20,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["099720109477"] # Canonical
+  owners = ["099720109477"]
 
 }
 
@@ -38,7 +38,24 @@ data "aws_ami" "amazon_linux" {
     values = ["hvm"]
   }
 
-  owners = ["137112412989"] # Amazon
+  owners = ["137112412989"]
+}
+
+#imagen de debian
+data "aws_ami" "debian" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["debian-12-amd64-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["136693071363"]
 }
 
 #crear un grupo de seguridad para ssh y http/https
@@ -89,7 +106,7 @@ resource "aws_security_group" "security" {
 
 #crear una instancia
 resource "aws_instance" "instancia" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.debian.id
   instance_type = "t2.micro"    #poner el t2
   subnet_id = aws_subnet.subred-publica.id
   vpc_security_group_ids = [aws_security_group.security.id]
@@ -100,18 +117,7 @@ resource "aws_instance" "instancia" {
     Name = "instancia"
   }
 
-  /*user_data = <<-EOF
-              #!/bin/bash
-              # Datos de usuario
-              apt update -y
-              apt install -y apache2
-              systemctl start apache2
-              systemctl enable apache2
-              sudo apt-get install php
-              sudo apt-get install libapache2-mod-php
-              systemctl restart apache2
-              echo "<h1>Hola mundo desde $(hostname -f)</h1>" > /var/www/html/index.html
-              EOF*/
+  user_data = file("script-nginxEn-debian.sh")
 }
 
 #otra instancia con amazon linux
@@ -126,6 +132,7 @@ resource "aws_instance" "instancia-nginx" {
   tags = {
     Name = "instancia-nginx"
   }
+  user_data = file("script-nginxEn-fedora.sh")
 }
 
 #creacion del bucket s3 para guardar archivos
