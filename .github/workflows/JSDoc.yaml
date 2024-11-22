@@ -26,7 +26,7 @@ jobs:
       - name: Install jsdoc and generate documentation
         run: |
           sudo npm install -g jsdoc
-          sudo jsdoc /Pagina/funcion.js -d ./docs
+          sudo jsdoc ./Pagina/funcion.js -d ./docs
 
       - name: Upload documentation to S3
         run: |
