@@ -129,7 +129,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}  # Región en la que está tu bucket de S3
+          aws-region: "us-east-1"  # Región en la que está tu bucket de S3
 
       - name: Instalar Node.js y npm
         run: |
@@ -139,10 +139,10 @@ jobs:
       - name: Instalar jsdoc y generar documentacion
         run: |
           sudo npm install -g jsdoc
-          sudo jsdoc /Pagina/funcion.js -d ./docs
+          sudo jsdoc ./Pagina/funcion.js -d ./docs
 
       - name: Subir documentacion al S3
-        run: aws s3 cp ./docs s3://${{ env.bucket_nombre }}/Pagina --recursive
+        run: aws s3 sync ./docs s3://${{ secrets.AWS_S3_BUCKET }}/Pagina/docs
 
       - name: Eliminar carpeta docs
-        run: rm -rf ./docs    
+        run: sudo rm -rf ./docs    
