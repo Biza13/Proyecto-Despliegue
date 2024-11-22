@@ -10,25 +10,23 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4.2.2
 
-      - name: Create private key file
-        run: |
-          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
-          chmod 600 deploy_key.pem
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}  # Región en la que está tu bucket de S3
 
-      - name: Run commands on EC2
+      - name: Install Node.js and npm
         run: |
-         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} 'sudo apt-get update'
-
-      - name: Install nodejs and npm on EC2
-        run: |
-         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} '
-         sudo apt-get install -y nodejs &&
-         sudo apt install -y npm
-         '
+          sudo apt-get update
+          sudo apt install -y nodejs npm
 
       - name: Install jsdoc and generate documentation
         run: |
-         ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@${{ secrets.PUBLIC_IP }} '
-         sudo npm install -g jsdoc &&
-         sudo jsdoc /var/www/html/Pagina/funcion.js -d /var/www/html/Pagina/docs
-         '
+          sudo npm install -g jsdoc
+          sudo jsdoc /Pagina/funcion.js -d ./docs
+
+      - name: Upload documentation to S3
+        run: |
+          aws s3 cp ./docs s3://${{ secrets.S3_BUCKET_NAME }}/Pagina --recursive
