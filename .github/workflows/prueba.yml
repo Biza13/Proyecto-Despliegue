@@ -60,7 +60,7 @@ jobs:
       - name: capturar output de la ip de ec2 de fedora
         run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
 
-  #segundo job subir la pagina al bucket      
+  #segundo job bucket como servidor y subir la pagina al bucket      
   SubirPaginaEstatica: 
     needs: despliegue
     runs-on: ubuntu-latest
