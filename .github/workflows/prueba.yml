@@ -90,7 +90,7 @@ jobs:
 
       - name: Habilitar el hosting de página web estática
         run: |
-          aws s3 website s3://${{ senv.bucket_nombre }} --index-document index.html --error-document 404.html
+          aws s3 website s3://${{ env.bucket_nombre }} --index-document index.html --error-document 404.html
 
       - name: Configurar la política de acceso público
         run: |
