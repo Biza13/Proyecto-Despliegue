@@ -26,9 +26,9 @@ output "instance_public_ip" {
 }
 
 #ip publica de instancia con amazon linux
-output "instance_public_ip_nginx" {
-  description = "IP publica de instancia EC2 nginx"
-  value = aws_instance.instancia-nginx.public_ip
+output "instance_public_ip_fedora" {
+  description = "IP publica de instancia EC2 fedora"
+  value = aws_instance.instancia-fedora.id
 }
 
 output "s3" {
