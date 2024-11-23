@@ -11,7 +11,7 @@ on:
  workflow_dispatch:
 
 jobs:
-#job para desplegar
+#job para desplegar infraestructura de terraform
   despliegue:   #nombre del job
     runs-on: ubuntu-latest
     steps:   #pasos
@@ -45,20 +45,22 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
-      - name: Subir tfstate al bucket de S3
-        run: aws s3 cp terraform.tfstate s3://cubo-s3-begona/ --region us-east-1
+      #COGER OUTPUTS
 
       #aqui creo una variable de entorno de githubActions con el output de el nombre del bucket
       - name: Capturar output de Terraform
         run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV  
         
       #variable de entorno para la ip de debian
-      - name: capturar output de ip ec2 de debian  
+      - name: capturar output de ip publica ec2 de debian  
         run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
 
       #variable de entorno para la ip de fedora
-      - name: capturar output de la ip de ec2 de fedora
+      - name: capturar output de la ip publica de ec2 de fedora
         run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
+
+      - name: Subir tfstate al bucket de S3
+        run: aws s3 cp terraform.tfstate s3://${{ env.bucket_nombre }}/ --region us-east-1  
 
   #segundo job bucket como servidor y subir la pagina al bucket      
   SubirPaginaEstatica: 
@@ -116,7 +118,8 @@ jobs:
 
       - name: Subir a S3 bucket la carpeta Pagina  
         run: aws s3 sync ./Pagina s3://${{ env.bucket_nombre }}/Pagina
-  #generar y subir la carpeta de docs
+        
+  #job 3 generar y subir la carpeta de docs DOCUMENTACIÓN
   Documentacion:
     needs: SubirPaginaEstatica
     runs-on: ubuntu-latest
@@ -129,7 +132,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"  # Región en la que está tu bucket de S3
+          aws-region: "us-east-1"
 
       - name: Instalar Node.js y npm
         run: |
@@ -142,7 +145,7 @@ jobs:
           sudo jsdoc ./Pagina/funcion.js -d ./docs
 
       - name: Subir documentacion al S3
-        run: aws s3 sync ./docs s3://${{ secrets.AWS_S3_BUCKET }}/Pagina/docs
+        run: aws s3 sync ./docs s3://${{ env.bucket_nombre }}/Pagina/docs
 
-      - name: Eliminar carpeta docs
+      - name: Eliminar carpeta docs del repositorio
         run: sudo rm -rf ./docs    
