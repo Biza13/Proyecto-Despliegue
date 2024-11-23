@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        if: ${{ inputs.checkout_code }}
+        if: ${{ inputs.checkout_code == true }}
         uses: actions/checkout@v4.2.2
 
       - name: Set up AWS credentials
-        if: ${{ inputs.configure_aws }}
+        if: ${{ inputs.configure_aws == true }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
