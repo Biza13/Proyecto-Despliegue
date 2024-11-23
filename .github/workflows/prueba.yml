@@ -14,6 +14,12 @@ jobs:
 #job para desplegar infraestructura de terraform
   despliegue:   #nombre del job
     runs-on: ubuntu-latest
+    
+    outputs:
+      bucket_nombre: ${{ steps.capturar_bucket.outputs.bucket_nombre }}
+      ip_debian: ${{ steps.capturar_ip_debian.outputs.ip_debian }}
+      ip_fedora: ${{ steps.capturar_ip_fedora.outputs.ip_fedora }}
+      
     steps:   #pasos
           #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
 
