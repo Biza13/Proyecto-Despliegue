@@ -22,23 +22,17 @@ jobs:
       
     steps:   #pasos
           #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
-
-      - name: uso del yml comun
-        uses: ./.github/workflows/comun.yml
-        with:
-          checkout_code: true
-          configure_aws: true
           
-      #- name: Checkout   #nombre del action
-      #  uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
+      - name: Checkout   #nombre del action
+        uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
       
-      #- name: Configurar credenciales aws
-      #  uses: aws-actions/configure-aws-credentials@v4
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-      #    aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+      - name: Configurar credenciales aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
           
       #este paso es para instalar terraform en la maquina virtual
       - name: Setup Terraform
@@ -58,58 +52,35 @@ jobs:
          TF_VAR_deployer_public_key: ${{ secrets.DEPLOYER_PUBLIC_KEY }}
         run: terraform apply -auto-approve -var 'public_key=${{ secrets.DEPLOYER_PUBLIC_KEY }}'
 
-      #COGER OUTPUTS
-
-      #aqui creo una variable de entorno de githubActions con el output de el nombre del bucket
-      #- name: Capturar output de Terraform
-      #  run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV  
-        
-      #variable de entorno para la ip de debian
-      #- name: capturar output de ip publica ec2 de debian  
-      #  run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
-
-      #variable de entorno para la ip de fedora
-      #- name: capturar output de la ip publica de ec2 de fedora
-      #  run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
-
-      #- name: Subir tfstate al bucket de S3
-      #  run: aws s3 cp terraform.tfstate s3://${{ env.bucket_nombre }}/ --region us-east-1  
-
       #capturar los outputs de terraform y hacerlos como outputs del job para poder usarlos en otros jobs
       - name: Capturar output de Terraform (Bucket)
         id: capturar_bucket
-        run: echo "::set-output name=bucket_nombre::$(terraform output -raw s3)"
+        run: echo "bucket_nombre=$(terraform output -raw s3)" >> "$GITHUB_OUTPUT"
 
       - name: Capturar output de IP pública EC2 de Debian
         id: capturar_ip_debian
-        run: echo "::set-output name=ip_debian::$(terraform output -raw instance_public_ip)"
+        run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> "$GITHUB_OUTPUT"
 
       - name: Capturar output de IP pública EC2 de Fedora
         id: capturar_ip_fedora
-        run: echo "::set-output name=ip_fedora::$(terraform output -raw instance_public_ip_fedora)"
+        run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> "$GITHUB_OUTPUT"
 
   #segundo job bucket como servidor y subir la pagina al bucket      
   SubirPaginaEstatica: 
     needs: despliegue
     runs-on: ubuntu-latest
     steps: 
-
-      - name: uso del yml comun
-        uses: ./.github/workflows/comun.yml
-        with:
-          checkout_code: true
-          configure_aws: true
     
-      #- name: Checking out code
-      #  uses: actions/checkout@v4
+      - name: Checking out code
+        uses: actions/checkout@v4
         
-      #- name: Configure AWS Credentials
-      #  uses: aws-actions/configure-aws-credentials@v4
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-      #    aws-region: "us-east-1"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
 
       #He de deshabilitar el bloqueo de acceso publico sino no puedo habilitar el hosting
       - name: Deshabilitar bloqueo de acceso público temporalmente
@@ -157,22 +128,16 @@ jobs:
     needs: despliegue
     runs-on: ubuntu-latest
     steps:
-
-      - name: uso del yml comun
-        uses: ./.github/workflows/comun.yml
-        with:
-          checkout_code: true
-          configure_aws: true
     
-      #- name: Check out repository
-      #  uses: actions/checkout@v4.2.2
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
 
-      #- name: Set up AWS credentials
-      #  uses: aws-actions/configure-aws-credentials@v4
-      #  with:
-      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    aws-region: "us-east-1"
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
 
       - name: Instalar Node.js y npm
         run: |
