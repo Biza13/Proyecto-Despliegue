@@ -18,17 +18,17 @@ jobs:
 
       - name: Con Rsync subir los archivos a el servidor remoto
         run: |
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php debian@${{ secrets.PUBLIC_IP }}:/home/debian/
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto debian@${{ secrets.PUBLIC_IP }}:/home/debian/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ secrets.PUBLIC_IP }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ secrets.PUBLIC_IP }}:/home/admin/
 
       - name: Mover archivos a /var/www/html en la instancia
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no debian@${{ secrets.PUBLIC_IP }} << 'EOF'
-            sudo mv /home/debian/index.php /var/www/html/index.php
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no admin@${{ secrets.PUBLIC_IP }} << 'EOF'
+            sudo mv /home/admin/index.php /var/www/html/index.php
             sudo chown www-data:www-data /var/www/html/index.php
             sudo chmod 644 /var/www/html/index.php
 
-            sudo mv /home/debian/MiProyecto /var/www/html/MiProyecto
+            sudo mv /home/admin/MiProyecto /var/www/html/MiProyecto
             sudo chown -R www-data:www-data /var/www/html/MiProyecto
             sudo chmod -R 755 /var/www/html/MiProyecto
 
