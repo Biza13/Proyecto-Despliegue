@@ -18,7 +18,7 @@ jobs:
           #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
 
       #- name: uso del yml comun
-      #  uses: ./comun.yml
+      #  uses: ./.github/workflows/comun.yml
       #  with:
       #    checkout_code: true
       #    configure_aws: true
@@ -89,7 +89,7 @@ jobs:
     steps: 
 
       #- name: uso del yml comun
-      #  uses: ./comun.yml
+      #  uses: ./.github/workflows/comun.yml
       #  with:
       #    checkout_code: true
       #    configure_aws: true
@@ -153,7 +153,7 @@ jobs:
     steps:
 
       #- name: uso del yml comun
-      #  uses: ./comun.yml
+      #  uses: ./.github/workflows/comun.yml
       #  with:
       #    checkout_code: true
       #    configure_aws: true
