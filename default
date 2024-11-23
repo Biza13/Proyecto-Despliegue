@@ -1,0 +1,19 @@
+#este archivo esta en el directorio /etc/nginx/sites-available/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html index.php;
+
+    server_name _;
+
+    # Configuración para manejar archivos PHP
+    location / {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;  # Cambia esto si usas una versión diferente de PHP
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+}
