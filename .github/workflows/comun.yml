@@ -1,0 +1,27 @@
+name: actions comunes
+
+on:
+  workflow_call:
+    inputs:
+      checkout_code:
+        required: true
+        type: boolean
+      configure_aws:
+        required: true
+        type: boolean
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        if: ${{ inputs.checkout_code }}
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up AWS credentials
+        if: ${{ inputs.configure_aws }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
