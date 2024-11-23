@@ -16,7 +16,7 @@ if (!isset($_SESSION["usuario"])){
 } */
 
 //incluir las funciones
-require ("modelo".DIRECTORY_SEPARATOR."funciones.php");
+require ("src".DIRECTORY_SEPARATOR."funciones.php");
 
 //incluir los controladores
 require ("controladores" .DIRECTORY_SEPARATOR. "contUsuarios.php");

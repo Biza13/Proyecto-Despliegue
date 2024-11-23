@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php">
+    <!-- Directorio donde se encuentran las pruebas -->
+    <testsuites>
+        <testsuite name="MiProyecto Test Suite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Reportes de cobertura de pruebas -->
+    <logging>
+        <!-- Por ejemplo, generar un reporte en formato HTML -->
+        <log type="coverage-html" target="coverage-report"/>
+    </logging>
+</phpunit>
