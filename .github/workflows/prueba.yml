@@ -17,24 +17,24 @@ jobs:
     steps:   #pasos
           #este paso copia lo que hay en la rama main en la maquina virtual de ubuntu (lo de arriba)
 
-      #- name: uso del yml comun
-      #  uses: ./.github/workflows/comun.yml
-      #  with:
-      #    checkout_code: true
-      #    configure_aws: true
-          
-      - name: Checkout   #nombre del action
-        uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
-      
-      - name: Configurar credenciales aws
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: uso del yml comun
+        uses: ./.github/workflows/comun.yml
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+          checkout_code: true
+          configure_aws: true
           
-          #este paso es para instalar terraform en la maquina virtual
+      #- name: Checkout   #nombre del action
+      #  uses: actions/checkout@v4  #en el apartado de la derecha buscar el nombre del anterior aprametro y ponerle el uso (copiar y pegar)
+      
+      #- name: Configurar credenciales aws
+      #  uses: aws-actions/configure-aws-credentials@v4
+      #  with:
+      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      #    aws-region: "us-east-1"  # Cambia a la región de AWS que estás usando
+          
+      #este paso es para instalar terraform en la maquina virtual
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -88,22 +88,22 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
 
-      #- name: uso del yml comun
-      #  uses: ./.github/workflows/comun.yml
-      #  with:
-      #    checkout_code: true
-      #    configure_aws: true
-    
-      - name: Checking out code
-        uses: actions/checkout@v4
-        
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: uso del yml comun
+        uses: ./.github/workflows/comun.yml
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: "us-east-1"
+          checkout_code: true
+          configure_aws: true
+    
+      #- name: Checking out code
+      #  uses: actions/checkout@v4
+        
+      #- name: Configure AWS Credentials
+      #  uses: aws-actions/configure-aws-credentials@v4
+      #  with:
+      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #    aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      #    aws-region: "us-east-1"
 
       #He de deshabilitar el bloqueo de acceso publico sino no puedo habilitar el hosting
       - name: Deshabilitar bloqueo de acceso público temporalmente
@@ -152,21 +152,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      #- name: uso del yml comun
-      #  uses: ./.github/workflows/comun.yml
-      #  with:
-      #    checkout_code: true
-      #    configure_aws: true
-    
-      - name: Check out repository
-        uses: actions/checkout@v4.2.2
-
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: uso del yml comun
+        uses: ./.github/workflows/comun.yml
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"
+          checkout_code: true
+          configure_aws: true
+    
+      #- name: Check out repository
+      #  uses: actions/checkout@v4.2.2
+
+      #- name: Set up AWS credentials
+      #  uses: aws-actions/configure-aws-credentials@v4
+      #  with:
+      #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #    aws-region: "us-east-1"
 
       - name: Instalar Node.js y npm
         run: |
