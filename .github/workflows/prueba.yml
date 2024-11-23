@@ -158,3 +158,6 @@ jobs:
 
       - name: Eliminar carpeta docs del repositorio
         run: sudo rm -rf ./docs    
+
+      #HASTA AQUI FUNCIONA
+      
