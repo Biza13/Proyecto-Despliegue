@@ -121,7 +121,7 @@ jobs:
         run: aws s3 cp ./index.html s3://${{ needs.despliegue.outputs.bucket_nombre }}/index.html    
 
       - name: Subir a S3 bucket la carpeta Pagina  
-        run: aws s3 sync ./Pagina s3://$${{ needs.despliegue.outputs.bucket_nombre }}/Pagina
+        run: aws s3 sync ./Pagina s3://${{ needs.despliegue.outputs.bucket_nombre }}/Pagina
         
   #job 3 generar y subir la carpeta de docs DOCUMENTACIÓN
   Documentacion:
