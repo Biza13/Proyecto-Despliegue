@@ -48,19 +48,32 @@ jobs:
       #COGER OUTPUTS
 
       #aqui creo una variable de entorno de githubActions con el output de el nombre del bucket
-      - name: Capturar output de Terraform
-        run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV  
+      #- name: Capturar output de Terraform
+      #  run: echo "bucket_nombre=$(terraform output -raw s3)" >> $GITHUB_ENV  
         
       #variable de entorno para la ip de debian
-      - name: capturar output de ip publica ec2 de debian  
-        run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
+      #- name: capturar output de ip publica ec2 de debian  
+      #  run: echo "ip_debian=$(terraform output -raw instance_public_ip)" >> $GITHUB_ENV
 
       #variable de entorno para la ip de fedora
-      - name: capturar output de la ip publica de ec2 de fedora
-        run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
+      #- name: capturar output de la ip publica de ec2 de fedora
+      #  run: echo "ip_fedora=$(terraform output -raw instance_public_ip_fedora)" >> $GITHUB_ENV
 
-      - name: Subir tfstate al bucket de S3
-        run: aws s3 cp terraform.tfstate s3://${{ env.bucket_nombre }}/ --region us-east-1  
+      #- name: Subir tfstate al bucket de S3
+      #  run: aws s3 cp terraform.tfstate s3://${{ env.bucket_nombre }}/ --region us-east-1  
+
+      #capturar los outputs de terraform y hacerlos como outputs del job para poder usarlos en otros jobs
+      - name: Capturar output de Terraform (Bucket)
+        id: capturar_bucket
+        run: echo "::set-output name=bucket_nombre::$(terraform output -raw s3)"
+
+      - name: Capturar output de IP pública EC2 de Debian
+        id: capturar_ip_debian
+        run: echo "::set-output name=ip_debian::$(terraform output -raw instance_public_ip)"
+
+      - name: Capturar output de IP pública EC2 de Fedora
+        id: capturar_ip_fedora
+        run: echo "::set-output name=ip_fedora::$(terraform output -raw instance_public_ip_fedora)"
 
   #segundo job bucket como servidor y subir la pagina al bucket      
   SubirPaginaEstatica: 
@@ -82,7 +95,7 @@ jobs:
       - name: Deshabilitar bloqueo de acceso público temporalmente
         run: |
          aws s3api put-public-access-block \
-         --bucket ${{ env.bucket_nombre }} \
+         --bucket ${{ needs.despliegue.outputs.bucket_nombre }} \
          --public-access-block-configuration '{
           "BlockPublicAcls": false,
           "IgnorePublicAcls": false,
@@ -92,11 +105,11 @@ jobs:
 
       - name: Habilitar el hosting de página web estática
         run: |
-          aws s3 website s3://${{ env.bucket_nombre }} --index-document index.html --error-document 404.html
+          aws s3 website s3://${{ needs.despliegue.outputs.bucket_nombre }} --index-document index.html --error-document 404.html
 
       - name: Configurar la política de acceso público
         run: |
-          aws s3api put-bucket-policy --bucket ${{ env.bucket_nombre }} --policy '{
+          aws s3api put-bucket-policy --bucket ${{ needs.despliegue.outputs.bucket_nombre }} --policy '{
             "Version": "2012-10-17",
             "Statement": [
               {
@@ -107,21 +120,21 @@ jobs:
                 "s3:GetObject"
                 ],
                 "Resource": [
-                "arn:aws:s3:::${{ env.bucket_nombre }}/*"
+                "arn:aws:s3:::${{ needs.despliegue.outputs.bucket_nombre }}/*"
                 ]
               }
             ]
           }'
 
       - name: Subir a S3 bucket el index
-        run: aws s3 cp ./index.html s3://${{ env.bucket_nombre }}/index.html    
+        run: aws s3 cp ./index.html s3://${{ needs.despliegue.outputs.bucket_nombre }}/index.html    
 
       - name: Subir a S3 bucket la carpeta Pagina  
-        run: aws s3 sync ./Pagina s3://${{ env.bucket_nombre }}/Pagina
+        run: aws s3 sync ./Pagina s3://$${{ needs.despliegue.outputs.bucket_nombre }}/Pagina
         
   #job 3 generar y subir la carpeta de docs DOCUMENTACIÓN
   Documentacion:
-    needs: SubirPaginaEstatica
+    needs: despliegue
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -145,7 +158,7 @@ jobs:
           sudo jsdoc ./Pagina/funcion.js -d ./docs
 
       - name: Subir documentacion al S3
-        run: aws s3 sync ./docs s3://${{ env.bucket_nombre }}/Pagina/docs
+        run: aws s3 sync ./docs s3://${{ needs.despliegue.outputs.bucket_nombre }}/Pagina/docs
 
       - name: Eliminar carpeta docs del repositorio
         run: sudo rm -rf ./docs    
