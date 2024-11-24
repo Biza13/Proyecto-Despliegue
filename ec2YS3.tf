@@ -121,7 +121,7 @@ resource "aws_instance" "instancia" {
 }
 
 #otra instancia con amazon linux
-resource "aws_instance" "instancia-fedora" {
+resource "aws_instance" "instancia_fedora" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = "t2.micro"    #poner el t2
   subnet_id = aws_subnet.subred-publica.id

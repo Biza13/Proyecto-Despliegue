@@ -26,9 +26,10 @@ output "instance_public_ip" {
 }
 
 #ip publica de instancia con amazon linux
+
 output "instance_public_ip_fedora" {
-  description = "IP publica de instancia EC2 fedora"
-  value = aws_instance.instancia-fedora.ip
+  description = "IP pública de la instancia EC2 Fedora"
+  value       = aws_instance.instancia_fedora.public_ip
 }
 
 output "s3" {
