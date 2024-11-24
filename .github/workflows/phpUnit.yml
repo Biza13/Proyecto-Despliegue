@@ -20,7 +20,7 @@ jobs:
 
       - name: ejecutar el test
         working-directory: ./MiProyecto
-        run: ./vendor/bin/phpunit || true
+        run: php ./vendor/bin/phpunit || true
         continue-on-error: false  # Para que no detenga la ejecución del flujo si falla
 
       # Saber si ha pasado las pruebas o no
