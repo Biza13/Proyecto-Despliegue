@@ -20,3 +20,13 @@ jobs:
 
       - name: ejecutar el test
         run: php ./vendor/bin/phpunit
+        continue-on-error: false  # Para que no detenga la ejecución del flujo si falla
+
+      # Saber si ha pasado las pruebas o no
+      - name: Verificar resultados de PHPUnit
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✅ Todas las pruebas pasaron correctamente.";
+          else
+            echo "❌ Algunas pruebas fallaron.";
+          fi
