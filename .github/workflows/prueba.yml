@@ -186,7 +186,7 @@ jobs:
 
   subirPaginaPHP:   
      runs-on: ubuntu-latest
-     needs: phpUnit
+     needs: [phpUnit, despliegue]
      if: ${{ needs.phpUnit.outputs.test_resultado == 'success' || needs.phpUnit.outputs.test_resultado == 'warning' }}
 
      steps:
