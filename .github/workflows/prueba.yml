@@ -164,6 +164,7 @@ jobs:
   #tercer job para las pruebas de phpUnit    
   phpUnit:
     runs-on: ubuntu-latest
+    needs: despliegue
     #capturar la salida del test (succes, failiure o warning)
     outputs:
       test_resultado: ${{ steps.resultado.outcome }}
