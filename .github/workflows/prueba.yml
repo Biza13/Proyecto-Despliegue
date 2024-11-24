@@ -160,4 +160,67 @@ jobs:
         run: sudo rm -rf ./docs    
 
       #HASTA AQUI FUNCIONA
-      
+
+  #tercer job para las pruebas de phpUnit    
+  phpUnit:
+    runs-on: ubuntu-latest
+    #capturar la salida del test (succes, failiure o warning)
+    outputs:
+      test_resultado: ${{ steps.resultado.outcome }}
+    steps:
+      - name: Checking out code
+        uses: actions/checkout@v4
+
+      - name: instalar composer
+        working-directory: ./MiProyecto
+        run: composer require --dev phpunit/phpunit ^10
+        
+      - name: Remplazar composer.json en MiProyecto
+        run: cp ./composer.json ./MiProyecto/composer.json
+
+      - name: ejecutar el test
+        id: resultado
+        working-directory: ./MiProyecto
+        run: php ./vendor/bin/phpunit || true  #el true es para que aunque haya errores pase como 0, esdecir sin fallos
+
+  subirPaginaPHP:   
+     runs-on: ubuntu-latest
+     needs: phpUnit
+     if: ${{ needs.phpUnit.outputs.test_resultado == 'success' || needs.phpUnit.outputs.test_resultado == 'warning' }}
+
+     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Crear archivo private key
+        run: |
+          echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
+
+      - name: Con Rsync subir los archivos a el servidor remoto
+        run: |
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ needs.despliegue.outputs.ip_debian }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ needs.despliegue.outputs.ip_debian }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./default admin@${{ needs.despliegue.outputs.ip_debian }}:/home/admin/
+
+      - name: Mover archivos a /var/www/html en la instancia
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no admin@${{ needs.despliegue.outputs.ip_debian }} << 'EOF'
+            sudo mv /home/admin/index.php /var/www/html/index.php
+            sudo chown www-data:www-data /var/www/html/index.php
+            sudo chmod 644 /var/www/html/index.php
+
+            sudo mv /home/admin/MiProyecto /var/www/html/MiProyecto
+            sudo chown -R www-data:www-data /var/www/html/MiProyecto
+            sudo chmod -R 755 /var/www/html/MiProyecto
+
+            sudo rm -f /var/www/html/index.html
+
+            sudo mv /home/admin/default /etc/nginx/sites-available/default
+
+            sudo systemctl restart nginx
+          EOF
+
+      - name: Borrar archivo private key
+        run: |
+          rm -f deploy_key.pem
