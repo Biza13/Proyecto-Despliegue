@@ -36,6 +36,8 @@ jobs:
             sudo rm -f /var/www/html/index.html
 
             sudo mv /home/admin/default /etc/nginx/sites-available/default
+
+            sudo systemctl restart nginx
           EOF
 
       - name: Borrar archivo private key
