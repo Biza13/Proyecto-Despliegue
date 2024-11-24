@@ -18,17 +18,17 @@ jobs:
 
       - name: Con Rsync subir los archivos a el servidor remoto
         run: |
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php ec2-user@${{ secrets.PUBLIC_IP_NGINX }}:/home/ec2-user/
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto ec2-user@${{ secrets.PUBLIC_IP_NGINX }}:/home/ec2-user/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
 
       - name: Mover archivos a /var/www/html en la instancia
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_IP_NGINX }} << 'EOF'
-            sudo mv /home/ec2-user/index.php /usr/share/nginx/html/index.php
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no admin@${{ secrets.PUBLIC_IP_NGINX }} << 'EOF'
+            sudo mv /home/admin/index.php /usr/share/nginx/html/index.php
             sudo chown www-data:www-data /usr/share/nginx/html/index.php
             sudo chmod 644 /usr/share/nginx/html/index.php
 
-            sudo mv /home/ec2-user/MiProyecto /usr/share/nginx/html/MiProyecto
+            sudo mv /home/admin/MiProyecto /usr/share/nginx/html/MiProyecto
             sudo chown -R www-data:www-data /usr/share/nginx/html/MiProyecto
             sudo chmod -R 755 /usr/share/nginx/html/MiProyecto
 
