@@ -20,6 +20,7 @@ jobs:
         run: |
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
           rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./default admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
 
       - name: Mover archivos a /var/www/html en la instancia
         run: |
@@ -33,6 +34,8 @@ jobs:
             sudo chmod -R 755 /var/www/html/MiProyecto
 
             sudo rm -f /var/www/html/index.html
+
+            sudo mv /home/admin/default /etc/nginx/sites-available/default
           EOF
 
       - name: Borrar archivo private key
