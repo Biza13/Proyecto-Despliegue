@@ -217,6 +217,7 @@ jobs:
             sudo chmod -R 755 /var/www/html/MiProyecto
 
             sudo rm -f /var/www/html/index.html
+            sudo rm -f /var/www/html/index.nginx-debian.html
 
             sudo mv /home/admin/default /etc/nginx/sites-available/default
 
