@@ -18,12 +18,12 @@ jobs:
 
       - name: Con Rsync subir los archivos a el servidor remoto
         run: |
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ secrets.PUBLIC_IP }}:/home/admin/
-          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ secrets.PUBLIC_IP }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./index.php admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
+          rsync -avz -e "ssh -i deploy_key.pem -o StrictHostKeyChecking=no" ./MiProyecto admin@${{ secrets.PUBLIC_IP_NGINX }}:/home/admin/
 
       - name: Mover archivos a /var/www/html en la instancia
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no admin@${{ secrets.PUBLIC_IP }} << 'EOF'
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no admin@${{ secrets.PUBLIC_IP_NGINX }} << 'EOF'
             sudo mv /home/admin/index.php /var/www/html/index.php
             sudo chown www-data:www-data /var/www/html/index.php
             sudo chmod 644 /var/www/html/index.php
