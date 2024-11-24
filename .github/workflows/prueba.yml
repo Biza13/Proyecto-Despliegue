@@ -185,6 +185,7 @@ jobs:
         run: php ./vendor/bin/phpunit || true  #el true es para que aunque haya errores pase como 0, esdecir sin fallos
 
   subirPaginaPHP:   
+     #necesito dos jobs para hacer este, el de las pruebas unitarias y el de despliegue para poder acceder a los outputs de este
      runs-on: ubuntu-latest
      needs: [phpUnit, despliegue]
      if: ${{ needs.phpUnit.outputs.test_resultado == 'success' || needs.phpUnit.outputs.test_resultado == 'warning' }}
